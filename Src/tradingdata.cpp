@@ -44,12 +44,12 @@ void TradingData::stop()
     emit finished();
 }
 
-TradingCatCommon::PKLinesList TradingData::getKLinesOnDate(const StockExchangeID &stockExchangeID, const KLineID &klineID, const QDateTime &start, const QDateTime &end) const
+TradingCatCommon::PKLinesList TradingData::getKLinesOnDate(const StockExchangeID &stockExchangeID, const KLineID &klineID, const qint64 start, const qint64 end) const
 {
     Q_ASSERT(!stockExchangeID.isEmpty());
     Q_ASSERT(!klineID.isEmpty());
-    Q_ASSERT(start.isValid());
-    Q_ASSERT(end.isValid());
+    Q_ASSERT(start != 0);
+    Q_ASSERT(end != 0);
     Q_ASSERT(start < end);
 
     return _dataKLine->getKLinesOnDate(stockExchangeID, klineID, start, end);

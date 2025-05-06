@@ -307,13 +307,13 @@ KLineJson::KLineJson(const QJsonValue &json)
 
         _kline = std::make_shared<KLine>();
 
-        _kline->openTime = QDateTime::fromSecsSinceEpoch(JSONReadMapNumber<qint64>(klineJson, "OT", "KLine/OT", 0).value_or(0));
+        _kline->openTime = JSONReadMapNumber<qint64>(klineJson, "OT", "KLine/OT", 0).value_or(0);
         _kline->open = JSONReadMapNumber<double>(klineJson, "O", "KLine/O", 0.0f).value_or(-1.0f);
         _kline->high = JSONReadMapNumber<double>(klineJson, "H", "KLine/H", 0.0f).value_or(-1.0f);
         _kline->low = JSONReadMapNumber<double>(klineJson, "L", "KLine/L", 0.0f).value_or(-1.0f);
         _kline->close = JSONReadMapNumber<double>(klineJson, "C", "KLine/C", 0.0f).value_or(-1.0f);
         _kline->volume = JSONReadMapNumber<double>(klineJson, "V", "KLine/V", 0.0f).value_or(-1.0f);
-        _kline->closeTime = QDateTime::fromSecsSinceEpoch(JSONReadMapNumber<qint64>(klineJson, "CT", "KLine/CT", 0).value_or(0));
+        _kline->closeTime = JSONReadMapNumber<qint64>(klineJson, "CT", "KLine/CT", 0).value_or(0);
         _kline->quoteAssetVolume = JSONReadMapNumber<double>(klineJson, "QAV", "KLine/QAV", 0.0f).value_or(-1.0f);
 
         const auto klineIdJson = JSONReadMapToMap(klineJson, "ID", "KLine/ID");
@@ -335,13 +335,13 @@ QJsonObject KLineJson::toJson() const
     QJsonObject klineJson;
 
     klineJson.insert("ID", KLineIDJson(_kline->id).toJson());
-    klineJson.insert("OT", _kline->openTime.toSecsSinceEpoch());
+    klineJson.insert("OT", static_cast<qint64>(_kline->openTime));
     klineJson.insert("O", _kline->open);
     klineJson.insert("H", _kline->high);
     klineJson.insert("L", _kline->low);
     klineJson.insert("C", _kline->close);
     klineJson.insert("V", _kline->volume);
-    klineJson.insert("CT", _kline->closeTime.toSecsSinceEpoch());
+    klineJson.insert("CT", static_cast<qint64>(_kline->closeTime));
     klineJson.insert("QAV", _kline->quoteAssetVolume);
 
     return klineJson;

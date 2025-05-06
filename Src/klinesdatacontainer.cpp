@@ -44,7 +44,7 @@ KLinesDataContainer::KLinesDataContainer(const TradingCatCommon::StockExchangesI
     }
 }
 
-PKLinesList KLinesDataContainer::getKLinesOnDate(const StockExchangeID &stockExchangeId, const KLineID &klineId, const QDateTime &start, const QDateTime &end) const
+PKLinesList KLinesDataContainer::getKLinesOnDate(const StockExchangeID &stockExchangeId, const KLineID &klineId, const qint64 start, const qint64 end) const
 {
     Q_ASSERT(!stockExchangeId.isEmpty());
     Q_ASSERT(!klineId.isEmpty());
@@ -138,6 +138,7 @@ void KLinesDataContainer::addKLines(const StockExchangeID& stockExchangeId, cons
     }
     auto& klineMap = it_klinesData->second;
 
+    QStringList addedMissing;
     for (auto& localKline: localKLinesList)
     {
         const auto closeDateTime = localKline->closeTime;
@@ -151,7 +152,9 @@ void KLinesDataContainer::addKLines(const StockExchangeID& stockExchangeId, cons
 
         auto& lastClose = klineMap.begin()->first;
         const auto interval = static_cast<qint64>(klineId.type);
-        const auto deltaTime = lastClose.msecsTo(closeDateTime);
+        const auto deltaTime = closeDateTime - lastClose;
+
+        Q_ASSERT(deltaTime != 0);
 
         if (deltaTime <= 0)
         {
@@ -166,7 +169,7 @@ void KLinesDataContainer::addKLines(const StockExchangeID& stockExchangeId, cons
             const quint64 stepCount = ((deltaTime + 1) / interval) - 1;
 
             //Добавляем недостающие свечи
-            QDateTime newCloseTime = lastClose;
+            auto newCloseTime = lastClose;
             for (quint64 step = 0; step < stepCount; ++step)
             {
                 const auto tmp_kline = std::make_shared<KLine>();
@@ -178,7 +181,7 @@ void KLinesDataContainer::addKLines(const StockExchangeID& stockExchangeId, cons
                 tmp_kline->volume = 0;
                 tmp_kline->quoteAssetVolume = 0;
                 tmp_kline->openTime = newCloseTime;
-                newCloseTime = newCloseTime.addMSecs(interval);
+                newCloseTime = newCloseTime + interval;
                 tmp_kline->closeTime = newCloseTime;
 
                 auto tmpKLineCloseTime = tmp_kline->closeTime;
@@ -186,15 +189,20 @@ void KLinesDataContainer::addKLines(const StockExchangeID& stockExchangeId, cons
                 klineMap.emplace(std::move(tmpKLineCloseTime), std::move(tmp_kline));
             }
 
-            qWarning() << QString("StockExchange ID: %1 KLine ID: %2. Missing candlesticks with zero volume have been added. Between: %3 - %4")
-                              .arg(stockExchangeId.toString())
-                              .arg(klineId.toString())
-                              .arg(lastClose.toString(Common::SIMPLY_DATETIME_FORMAT))
-                              .arg(closeDateTime.toString(Common::SIMPLY_DATETIME_FORMAT));
+            addedMissing.push_back(QString("(%1-%2)")
+                                       .arg(QDateTime::fromMSecsSinceEpoch(lastClose).toString(Common::SIMPLY_DATETIME_FORMAT))
+                                       .arg(QDateTime::fromMSecsSinceEpoch(closeDateTime).toString(Common::SIMPLY_DATETIME_FORMAT)));
         }
 
         klineMap.emplace(std::move(closeDateTime), std::move(localKline));
+    }
 
+    if (!addedMissing.isEmpty())
+    {
+        qWarning() << QString("StockExchange ID: %1 KLine ID: %2. Missing candlesticks with zero volume have been added. Between: %3")
+            .arg(stockExchangeId.toString())
+            .arg(klineId.toString())
+            .arg(addedMissing.join(','));
     }
 
     if (klineMap.size() > COUNT_SAVE_KLINES)

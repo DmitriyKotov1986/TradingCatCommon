@@ -27,18 +27,18 @@ class KLinesDataContainer final
 private:
     struct KLineDateTimeReverseCmp
     {
-        bool operator()(const QDateTime& dateTime1, const QDateTime& dateTime2) const noexcept
+        bool operator()(const qint64 dateTime1, const qint64 dateTime2) const noexcept
         {
             return dateTime1 > dateTime2;
         }
-        size_t operator()(const QDateTime& dateTime) const noexcept
+        size_t operator()(const qint64 dateTime) const noexcept
         {
-            return qHash(dateTime);
+            return dateTime;
         }
     };
 
 public:
-    using KLineMap = std::map<QDateTime, TradingCatCommon::PKLine, KLineDateTimeReverseCmp>;
+    using KLineMap = std::map<qint64, TradingCatCommon::PKLine, KLineDateTimeReverseCmp>;  // key dateTime msec from Epoch
 
 public:
     /*!
@@ -60,8 +60,8 @@ public:
 
     TradingCatCommon::PKLinesList getKLinesOnDate(const TradingCatCommon::StockExchangeID& stockExchangeID,
                                                  const TradingCatCommon::KLineID& klineID,
-                                                 const QDateTime& start,
-                                                 const QDateTime& end) const;
+                                                 const qint64 start,
+                                                 const qint64 end) const;
 
     const TradingCatCommon::StockExchangesIDList& getStockExcangeList() const noexcept;
     const TradingCatCommon::KLinesIDList& getKLineList(const TradingCatCommon::StockExchangeID& stockExchangeID) const noexcept;

@@ -54,28 +54,15 @@ void Detector::addKLines(const TradingCatCommon::StockExchangeID& stockExchangeI
         return;
     }
 
-    const auto currDateTime = QDateTime::currentDateTime();
+    const auto currDateTime = QDateTime::currentDateTime().toMSecsSinceEpoch();
 
     for (const auto& kline: *klines)
     {
         Q_ASSERT(!kline->id.isEmpty());
 
-        if (kline->closeTime.secsTo(currDateTime) > 60 * 20)
+        if (currDateTime - kline->closeTime > 60 * 20 * 1000) // msec
         {
             continue;
-        }
-
-        const auto it_alreadyDetect = _alreadyDetectKLine.find(kline->id);
-        if (it_alreadyDetect != _alreadyDetectKLine.end())
-        {
-            if (it_alreadyDetect->second.secsTo(currDateTime) > 60 * 10)
-            {
-                _alreadyDetectKLine.erase(it_alreadyDetect);
-            }
-            else
-            {
-                continue;
-            }
         }
 
         for (const auto& [sessionId, filter]: _filters)
@@ -107,14 +94,14 @@ void Detector::addKLines(const TradingCatCommon::StockExchangeID& stockExchangeI
             QString msg;
             Filter::FilterTypes detectType(Filter::FilterType::UNDETECT);
             const auto delta = kline->deltaKLine();
-            // if (stockExchangeId.name == "OKX")
+            // if (stockExchangeId.name == "KUCOIN_FUTURES")
             // {
-            //      qInfo() << "OKX delta/volume" << kline->id.symbol << kline->deltaKLine() << kline->volumeKLine();
+            //      qInfo() << "KUCOIN_FUTURES delta/volume" << kline->id.symbol << kline->deltaKLine() << kline->volumeKLine();
             // }
             const auto filterDelta = filterData.delta().value_or(DBL_MAX);
             if ((delta > filterDelta))
             {
-                qDebug() << "Detect DELTA. ID: " << kline->id.toString() << " KLine: " << delta << " Filter: " << filterDelta;
+                //qDebug() << "Detect DELTA. ID: " << kline->id.toString() << " KLine: " << delta << " Filter: " << filterDelta;
 
                 detectType.setFlag(Filter::UNDETECT, false);
                 detectType.setFlag(Filter::DELTA);
@@ -126,34 +113,46 @@ void Detector::addKLines(const TradingCatCommon::StockExchangeID& stockExchangeI
             const auto& filterVolume = filterData.volume().value_or(DBL_MAX);
             if (volume > filterVolume)
             {
-                qDebug() << "Detect VOLUME. ID: " << kline->id.toString() << " KLine: " << volume << " Filter: " << filterVolume;
+                //qDebug() << "Detect VOLUME. ID: " << kline->id.toString() << " KLine: " << volume << " Filter: " << filterVolume;
 
                 detectType.setFlag(Filter::UNDETECT, false);
                 detectType.setFlag(Filter::VOLUME);
 
-                msg += QString(", %1:%2(%3 slots)").arg(Filter::filterTypeToString(Filter::VOLUME)).arg(volume, 0, 'f').arg(kline->volume, 0, 'f', 0);
+                msg += QString(", %1:%2(%3 slots)")
+                           .arg(Filter::filterTypeToString(Filter::VOLUME))
+                           .arg(volume, 0, 'f')
+                           .arg(kline->volume, 0, 'f', 0);
             }
 
             if (detectType.testFlag(Filter::DELTA) && detectType.testFlag(Filter::VOLUME))
             {
-                msg = QString("(%1) %2").arg(kline->closeTime.toString("hh:mm")).arg(msg.remove(0, 2));
+                msg = QString("%1->%2 (%3) High:%4 Open:%5 Close:%6 Low:%7 Volume:%8 %9")
+                          .arg(stockExchangeId.toString())
+                          .arg(kline->id.toString())
+                          .arg(QDateTime::fromMSecsSinceEpoch(kline->closeTime).toString("hh:mm"))
+                          .arg(kline->high)
+                          .arg(kline->open)
+                          .arg(kline->close)
+                          .arg(kline->low)
+                          .arg(kline->volume)
+                          .arg(msg.remove(0, 2));
 
                 const auto& klineIdHistory = kline->id;
                 auto klineIdReviewHistory = klineIdHistory;
                 klineIdReviewHistory.type = TradingCatCommon::KLineType::MIN5;
 
-                const auto history = _tradingData.getKLinesOnDate(stockExchangeId, kline->id, currDateTime.addMSecs(-static_cast<quint64>(klineIdHistory.type) * (KLINES_COUNT_HISTORY + 1)), currDateTime);
+                const auto history = _tradingData.getKLinesOnDate(stockExchangeId, kline->id, currDateTime - (static_cast<quint64>(klineIdHistory.type) * (KLINES_COUNT_HISTORY + 1)), currDateTime);
                 if (history->size() < KLINES_COUNT_HISTORY)
                 {
-                    qDebug() << "History size to less : " << history->size();
+                    //qDebug() << "History size to less : " << history->size();
 
                     continue;
                 }
 
-                const auto reviewHistory = _tradingData.getKLinesOnDate(stockExchangeId, klineIdReviewHistory, currDateTime.addMSecs(-static_cast<quint64>(klineIdReviewHistory.type) * (KLINES_COUNT_HISTORY + 1)), currDateTime);
+                const auto reviewHistory = _tradingData.getKLinesOnDate(stockExchangeId, klineIdReviewHistory, currDateTime - (static_cast<quint64>(klineIdReviewHistory.type) * (KLINES_COUNT_HISTORY + 1)), currDateTime);
                 if (reviewHistory->size() < KLINES_COUNT_HISTORY)
                 {
-                    qDebug() << "Review history size to less" << reviewHistory->size();
+                    //qDebug() << "Review history size to less" << reviewHistory->size();
 
                     continue;
                 }
@@ -169,12 +168,10 @@ void Detector::addKLines(const TradingCatCommon::StockExchangeID& stockExchangeI
                 detectData->msg = msg;
 
                 emit klineDetect(sessionId, detectData);
-
-                _alreadyDetectKLine.emplace(kline->id, currDateTime);
             }
             else
             {
-                qDebug() << "No detect. ID: " << kline->id.toString();
+                //qDebug() << "No detect. ID: " << kline->id.toString();
             }
         }
     }

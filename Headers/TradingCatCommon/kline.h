@@ -147,15 +147,16 @@ bool operator==(const TradingCatCommon::KLineID& key1, const TradingCatCommon::K
  */
 struct KLine
 {
+    float open = 0.0f;     ///< цена в момент открытия
+    float high = 0.0f;     ///< наибольшая свеча
+    float low = 0.0f;      ///< наименьшая свеча
+    float close = 0.0f;    ///< цена в момент закрытия
+    float volume = 0.0f;   ///< объем
+    float quoteAssetVolume = 0.0f;
+    qint64 openTime;     ///< время открытия. мсек Epoch
+    qint64 closeTime;    ///< время закрытия. мсек Epoch
+
     KLineID id;             ///< Идентификатор свечи
-    QDateTime openTime;     ///< время открытия
-    double open = 0.0f;     ///< цена в момент открытия
-    double high = 0.0f;     ///< наибольшая свеча
-    double low = 0.0f;      ///< наименьшая свеча
-    double close = 0.0f;    ///< цена в момент закрытия
-    double volume = 0.0f;   ///< объем
-    QDateTime closeTime;    ///< время закрытия
-    double quoteAssetVolume = 0.0f;
 
     /*!
         Возвращает true если данные свечи корректны

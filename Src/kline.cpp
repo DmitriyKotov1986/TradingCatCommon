@@ -22,6 +22,8 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, KLINETYPE_HOUR8, ("8h"));
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, KLINETYPE_DAY1, ("1d"));
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, KLINETYPE_WEEK1, ("1w"));
 
+static const double POSITIV_EPSILON = -std::numeric_limits<double>::epsilon();
+
 QString TradingCatCommon::KLineTypeToString(KLineType type)
 {
     switch (type)
@@ -178,11 +180,11 @@ QString TradingCatCommon::getKLineTableName(const QString &stockExcangeName, con
 
 bool KLine::check() const noexcept
 {
-    const auto curDateTime = QDateTime::currentDateTime().addSecs(60);
-    static const double POSITIV_EPSILON = -std::numeric_limits<double>::epsilon();
+    const auto curDateTime = QDateTime::currentDateTime().addSecs(60).toMSecsSinceEpoch();
     return !id.isEmpty() &&
-           closeTime.isValid() && (closeTime > openTime) && (closeTime < curDateTime) &&
-           openTime.isValid() && (openTime < curDateTime) &&
+           closeTime > openTime &&
+           closeTime < curDateTime &&
+           openTime < curDateTime &&
            open > POSITIV_EPSILON &&
            high > POSITIV_EPSILON &&
            low > POSITIV_EPSILON &&
@@ -205,6 +207,7 @@ double TradingCatCommon::KLine::deltaKLine() const noexcept
     else
     {
         _delta = ((high - low) / low) * 100.0f;
+        Q_ASSERT(_delta > POSITIV_EPSILON);
     }
 
     return _delta.value();

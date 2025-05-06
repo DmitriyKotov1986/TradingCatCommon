@@ -92,8 +92,6 @@ private:
 
     std::unordered_map<qint64, TradingCatCommon::Filter> _filters;
 
-    std::unordered_map<TradingCatCommon::KLineID, QDateTime> _alreadyDetectKLine; ///< Свечи на которых детектор сработал за последнии 10 минут
-
 }; //class Detector
 
 } // namespace TradingCatCommon

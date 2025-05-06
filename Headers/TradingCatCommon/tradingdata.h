@@ -31,8 +31,8 @@ public:
     //for HTTP server
     TradingCatCommon::PKLinesList getKLinesOnDate(const TradingCatCommon::StockExchangeID &stockExchangeID,
                                                   const TradingCatCommon::KLineID& klineID,
-                                                  const QDateTime& start,
-                                                  const QDateTime& end) const;
+                                                  const qint64 start,
+                                                  const qint64 end) const;
 
     qsizetype moneyCount() const noexcept;
     const TradingCatCommon::StockExchangesIDList& stockExcangesIdList() const noexcept;
