@@ -17,20 +17,20 @@ namespace TradingCatCommon
 
 /*!
     Типы пакетов в протоколе
- */
+*/
 enum class PackageType: quint8
 {
     UNDEFINED = 0,              ///< Неопределен
     NULL_DATA = 1,              ///< Нулевой пакет без данных
     SERVER_STATUS = 2,          ///< Пакет статуса сервера
-    LOGIN = 3,
-    LOGOUT = 4,
-    CONFIG = 5,
-    STOCKEXCHANGES = 6,
-    DETECT = 7
+    LOGIN = 3,                  ///< Логин
+    LOGOUT = 4,                 ///< Логаут
+    CONFIG = 5,                 ///< Сохранение конфигурации пользователя
+    STOCKEXCHANGES = 6,         ///< Список поддерживаемых бирж
+    DETECT = 7                  ///< Список свечей прошедших фильтр
 };
 
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, OK_ANSWER_TEXT, ("OK"));
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, OK_ANSWER_TEXT, ("OK")); ///< Сообщение об успешной обработке данных
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Запросы на сервер
@@ -327,30 +327,6 @@ private:
 
 };
 
-// ///////////////////////////////////////////////////////////////////////////////
-// ///     The KLinesHistoryArrayJson class - список свечей. Это основной класс ответа на запросы
-// ///         KLineNew и KLineHistory
-// ///
-// class KLinesHistoryArrayJson
-// {
-// public:
-//     using KLinesList = std::list<KLineJson>;
-
-// public:
-//     KLinesHistoryArrayJson() = default;
-//     KLinesHistoryArrayJson(const QJsonValue& json);
-
-//     void addKLine(KLineJson&& klineJson);
-
-//     QJsonArray toJson() const;
-
-//     const KLinesList& klines() const noexcept;
-
-// private:
-//     KLinesList _klinesList;
-
-// };
-
 ///////////////////////////////////////////////////////////////////////////////
 ///     The class KLineIDJson
 ///
@@ -376,30 +352,6 @@ private:
     TradingCatCommon::KLineID _klineId;
 
 };
-
-// ///////////////////////////////////////////////////////////////////////////////
-// ///     The KLinesIDArrayJson class
-// ///
-// class KLinesIDArrayJson
-// {
-// public:
-//     using KLinesIDJsonList = std::list<KLineIDJson>;
-
-// public:
-//     KLinesIDArrayJson() = default;
-//     KLinesIDArrayJson(const QJsonValue& json);
-
-//     void addKLineID(const KLineIDJson& klineIDJson);
-
-//     QJsonArray toJson() const;
-//     TradingCatCommon::KLinesIDList toKLinesIDList() const;
-
-//     const KLinesIDJsonList& klines() const noexcept;
-
-// private:
-//     KLinesIDJsonList _klinesIDJsonList;
-
-// };
 
 ///////////////////////////////////////////////////////////////////////////////
 ///     The class StockExchangeIDJson
@@ -449,15 +401,5 @@ private:
     StockExchangesIDList _stockExchangesIDList;
 
 };
-
-
-
-
-
-
-
-
-
-
 
 } // namespace TradingCatCommon

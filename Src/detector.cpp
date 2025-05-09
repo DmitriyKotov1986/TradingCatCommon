@@ -142,7 +142,7 @@ void Detector::addKLines(const TradingCatCommon::StockExchangeID& stockExchangeI
                 klineIdReviewHistory.type = TradingCatCommon::KLineType::MIN5;
 
                 const auto history = _tradingData.getKLinesOnDate(stockExchangeId, kline->id, currDateTime - (static_cast<quint64>(klineIdHistory.type) * (KLINES_COUNT_HISTORY + 1)), currDateTime);
-                if (history->size() < KLINES_COUNT_HISTORY)
+                if (history->empty())
                 {
                     //qDebug() << "History size to less : " << history->size();
 
@@ -150,7 +150,7 @@ void Detector::addKLines(const TradingCatCommon::StockExchangeID& stockExchangeI
                 }
 
                 const auto reviewHistory = _tradingData.getKLinesOnDate(stockExchangeId, klineIdReviewHistory, currDateTime - (static_cast<quint64>(klineIdReviewHistory.type) * (KLINES_COUNT_HISTORY + 1)), currDateTime);
-                if (reviewHistory->size() < KLINES_COUNT_HISTORY)
+                if (reviewHistory->empty())
                 {
                     //qDebug() << "Review history size to less" << reviewHistory->size();
 
@@ -165,7 +165,7 @@ void Detector::addKLines(const TradingCatCommon::StockExchangeID& stockExchangeI
                 detectData->reviewHistory = std::move(reviewHistory);
                 detectData->delta = delta;
                 detectData->volume = volume;
-                detectData->msg = msg;
+                detectData->msg =std::move(msg);
 
                 emit klineDetect(sessionId, detectData);
             }

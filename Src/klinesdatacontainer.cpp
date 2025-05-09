@@ -138,7 +138,9 @@ void KLinesDataContainer::addKLines(const StockExchangeID& stockExchangeId, cons
     }
     auto& klineMap = it_klinesData->second;
 
+#ifdef QT_DEBUG
     QStringList addedMissing;
+#endif
     for (auto& localKline: localKLinesList)
     {
         const auto closeDateTime = localKline->closeTime;
@@ -189,14 +191,17 @@ void KLinesDataContainer::addKLines(const StockExchangeID& stockExchangeId, cons
                 klineMap.emplace(std::move(tmpKLineCloseTime), std::move(tmp_kline));
             }
 
+#ifdef QT_DEBUG
             addedMissing.push_back(QString("(%1-%2)")
                                        .arg(QDateTime::fromMSecsSinceEpoch(lastClose).toString(Common::SIMPLY_DATETIME_FORMAT))
                                        .arg(QDateTime::fromMSecsSinceEpoch(closeDateTime).toString(Common::SIMPLY_DATETIME_FORMAT)));
+#endif
         }
 
         klineMap.emplace(std::move(closeDateTime), std::move(localKline));
     }
 
+#ifdef QT_DEBUG
     if (!addedMissing.isEmpty())
     {
         qWarning() << QString("StockExchange ID: %1 KLine ID: %2. Missing candlesticks with zero volume have been added. Between: %3")
@@ -204,6 +209,7 @@ void KLinesDataContainer::addKLines(const StockExchangeID& stockExchangeId, cons
             .arg(klineId.toString())
             .arg(addedMissing.join(','));
     }
+#endif
 
     if (klineMap.size() > COUNT_SAVE_KLINES)
     {

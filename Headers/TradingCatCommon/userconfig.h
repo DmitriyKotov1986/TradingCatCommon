@@ -13,7 +13,7 @@ namespace TradingCatCommon
 ///     The UserConfig class - класс конфигурации пользователя настраиваемой
 ///         через приложение
 ///
-struct UserConfig final
+class UserConfig final
 {
 public:
     UserConfig() = default;

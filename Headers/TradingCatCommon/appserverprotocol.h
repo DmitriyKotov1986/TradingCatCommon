@@ -31,17 +31,42 @@ public:
 };
 
 ///////////////////////////////////////////////////////////////////////////////
-///     The ServerStatus class
+///     The ServerStatus class - данные о состоянии сервера
 ///
 class ServerStatusAnswer
 {
 public:
+    /*!
+        Конструктор. Создает пустой ответ.
+    */
     ServerStatusAnswer() = default;
+
+    /*!
+        Основной конструтор. Использутся на стороне сервера
+        @param serverName - название сервера
+        @param serverVersion - версия сервера
+        @param serverTime - время на сервере
+        @param upTime - время аптайма в секундах
+        @param usersOnline - список пользоватлелей онлайн
+    */
     ServerStatusAnswer(const QString& serverName, const QString& serverVersion, const QDateTime& serverTime, const qint64 upTime, const QStringList& usersOnline);
+
+    /*!
+        Конструтор используется на стороне клиента
+        @param json - JSON представление пакета
+    */
     explicit ServerStatusAnswer(const QJsonValue& json);
 
+    /*!
+        Преобразует данные ответа в JSON объект
+        @return JSON объект
+    */
     QJsonObject toJson() const;
 
+    /*!
+        Время на сервере
+        @return время на сервере
+    */
     const QDateTime& serverTime() const noexcept;
     qint64 upTime() const noexcept;
     const QString& serverName() const noexcept;
@@ -52,8 +77,9 @@ public:
     const QString& errorString() const noexcept;
 
 private:
-    QString _errorString;
+    QString _errorString;  ///< Описание ошибки парсинга
 
+    //data
     QDateTime _serverTime = QDateTime::currentDateTime();
     qint64 _upTime = 0;
     QString _serverName;
