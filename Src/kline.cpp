@@ -2,6 +2,9 @@
 #include <limits>
 #include <cmath>
 
+//Qt
+#include <QRegularExpression>
+
 //My
 #include "Common/common.h"
 
@@ -163,6 +166,24 @@ bool KLineID::isEmpty() const noexcept
 QString KLineID::toString() const
 {
     return QString("%1:%2").arg(symbol).arg(KLineTypeToString(type));
+}
+
+const QString &KLineID::baseName() const
+{
+    if (_baseName.has_value())
+    {
+        return _baseName.value();
+    }
+
+    static const auto reg = QRegularExpression("[^A-Z0-9]");
+
+    auto klineName = symbol;
+    klineName = klineName.first(klineName.indexOf("USDT"));
+    klineName = klineName.remove(reg);
+
+    _baseName = klineName;
+
+    return _baseName.value();
 }
 
 KLineID::KLineID(const QString &asymbol, KLineType atype)

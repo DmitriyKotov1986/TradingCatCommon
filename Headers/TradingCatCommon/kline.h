@@ -105,6 +105,16 @@ struct KLineID
         @return ИД свечи в строковом представлении
     */
     QString toString() const;
+
+    /*!
+        Возвращает название базового инструмента (BTC_USDT вернет BTC)
+        @return название базового инструмента
+     */
+    const QString& baseName() const;
+
+private:
+    mutable std::optional<QString> _baseName;
+
 };
 
 } //namespace TradingCatCommon
