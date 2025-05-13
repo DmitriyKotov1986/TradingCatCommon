@@ -60,6 +60,13 @@ qsizetype TradingData::moneyCount() const noexcept
     return _dataKLine->moneyCount();
 }
 
+const KLinesIDList &TradingData::getKLineList(const StockExchangeID &stockExchangeID) const
+{
+    Q_ASSERT(!stockExchangeID.isEmpty());
+
+    return _dataKLine->getKLineList(stockExchangeID);
+}
+
 const StockExchangesIDList &TradingData::stockExcangesIdList() const noexcept
 {
     return _stockExcangesIdList;

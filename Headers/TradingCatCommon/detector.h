@@ -31,25 +31,28 @@ class Detector
     Q_OBJECT
 
 public:
+    /*!
+        Структура данных сработовшего фильтра
+    */
     struct KLineDetectData
     {
-        TradingCatCommon::StockExchangeID stockExchangeId;
-        TradingCatCommon::Filter::FilterTypes filterActivate;
-        TradingCatCommon::PKLinesList history;
-        TradingCatCommon::PKLinesList reviewHistory;
-        double delta = 0.0f;
-        double volume = 0.0f;
-        QString msg;
+        TradingCatCommon::StockExchangeID stockExchangeId;      ///< ИД биржи
+        TradingCatCommon::Filter::FilterTypes filterActivate;   ///< типы стработавших фильтров
+        TradingCatCommon::PKLinesList history;                  ///< Список основных свечей
+        TradingCatCommon::PKLinesList reviewHistory;            ///< Список свечей обзора
+        double delta = 0.0f;    ///< Делта в момент стработки фильтра
+        double volume = 0.0f;   ///< Объем в момент сработки фильтра
+        QString msg;            ///< Отладочное сообщенеи
     };
 
-    using PKLineDetectData = std::shared_ptr<KLineDetectData>;
+    using PKLineDetectData = std::shared_ptr<KLineDetectData>; ///< список данных
 
     struct KLinesDetectedList
     {
-        std::list<TradingCatCommon::Detector::PKLineDetectData> detected;
-        bool isFull = false;
+        std::list<TradingCatCommon::Detector::PKLineDetectData> detected; ///< список данных
+        bool isFull = false; ///< true  - если размер списка сработок достиг максимальной величины
 
-        void clear();
+        void clear(); ///< очищает структуру
     };
 
 public:
@@ -59,13 +62,40 @@ public:
      */
     explicit Detector(const TradingCatCommon::TradingData& tradingData, QObject *parent = nullptr);
 
+    /*!
+        Деструктор
+    */
+    ~Detector() override = default;
+
 public slots:
+    /*!
+        Начало работы класса.
+    */
     void start();
+
+    /*!
+        Завершение работы класса
+    */
     void stop();
 
+    /*!
+        Слот обрабатывает новые полученные свечи
+        @param stockExchangeId - ИД биржи. Должно гарантироваться что ИД биржи не пустое и валидно
+        @param klines - список свечей. Должно гарантироваться что список не пустой
+    */
     void addKLines(const TradingCatCommon::StockExchangeID& stockExchangeId, const TradingCatCommon::PKLinesList& klines);
 
+    /*!
+        Слот обработки начала сессии пользователя
+        @param sessionId - ИД сессии пользователя. Не должно быть равно 0
+        @param config - конфигурация пользователя
+    */
     void userOnline(qint64 sessionId, const TradingCatCommon::UserConfig& config);
+
+    /*!
+        Завершенеи сессии пользователя
+        @param sessionId - ИД сессии пользователя. Не должно быть равно 0
+    */
     void userOffline(qint64 sessionId);
 
 signals:
@@ -83,14 +113,22 @@ signals:
     */
     void errorOccurred(Common::EXIT_CODE errorCode, const QString& errorString);
 
+    /*!
+        Сигнал генерируется при обнаружении свечи соотвествующей фильтру.
+        @param sessionId - ИД сессии пользователя
+        @param detectData - данные детектирования свечи
+    */
     void klineDetect(qint64 sessionId, const TradingCatCommon::Detector::PKLineDetectData& detectData);
 
+    /*!
+        Сингал генерируется после остановки работы класса
+    */
     void finished();
 
 private:
-    const TradingCatCommon::TradingData& _tradingData;
+    const TradingCatCommon::TradingData& _tradingData; ///< ссылка на данные полученных свечей
 
-    std::unordered_map<qint64, TradingCatCommon::Filter> _filters;
+    std::unordered_map<qint64, TradingCatCommon::Filter> _filters; ///< Список активных фильтрок. Ключ - ИД сессии пользователя, Значение - фильтр
 
 }; //class Detector
 

@@ -84,7 +84,7 @@ const TradingCatCommon::StockExchangesIDList& KLinesDataContainer::getStockExcan
     return _stockExchangesIdList;
 }
 
-const TradingCatCommon::KLinesIDList& KLinesDataContainer::getKLineList(const StockExchangeID &stockExchangeID) const noexcept
+const TradingCatCommon::KLinesIDList& KLinesDataContainer::getKLineList(const StockExchangeID &stockExchangeID) const
 {
     Q_ASSERT(!stockExchangeID.isEmpty());
 

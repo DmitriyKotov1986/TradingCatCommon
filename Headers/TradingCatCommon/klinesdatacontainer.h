@@ -3,8 +3,6 @@
 //STL
 #include <map>
 #include <unordered_map>
-#include <unordered_set>
-#include <optional>
 
 //Qt
 #include <QDateTime>
@@ -63,9 +61,23 @@ public:
                                                  const qint64 start,
                                                  const qint64 end) const;
 
+    /*!
+        Возвращает список поддерживаемых бирж
+        @return список поддерживаемых бирж
+    */
     const TradingCatCommon::StockExchangesIDList& getStockExcangeList() const noexcept;
-    const TradingCatCommon::KLinesIDList& getKLineList(const TradingCatCommon::StockExchangeID& stockExchangeID) const noexcept;
 
+    /*!
+        Возвращает список свечей поддерживаемых данной биржей
+        @param stockExchangeID - ИД биржи
+        @return список свечей  данной биржей
+    */
+    const TradingCatCommon::KLinesIDList& getKLineList(const TradingCatCommon::StockExchangeID& stockExchangeID) const;
+
+    /*!
+        Возвращает общее количество монет
+        @return общее количество монет
+    */
     qsizetype moneyCount() const noexcept;
 
 private:

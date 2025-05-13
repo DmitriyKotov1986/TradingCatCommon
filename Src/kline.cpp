@@ -236,12 +236,10 @@ double TradingCatCommon::KLine::deltaKLine() const noexcept
 
 double TradingCatCommon::KLine::volumeKLine() const noexcept
 {
-    if (_volume.has_value())
+    if (!_volume.has_value())
     {
-        return _volume.value();
+        _volume = ((open + close) / 2.0f) * volume;
     }
-
-    _volume = ((open + close) / 2.0f) * volume;
 
     return _volume.value();
 }

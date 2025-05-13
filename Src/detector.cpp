@@ -141,7 +141,10 @@ void Detector::addKLines(const TradingCatCommon::StockExchangeID& stockExchangeI
                 auto klineIdReviewHistory = klineIdHistory;
                 klineIdReviewHistory.type = TradingCatCommon::KLineType::MIN5;
 
-                const auto history = _tradingData.getKLinesOnDate(stockExchangeId, kline->id, currDateTime - (static_cast<quint64>(klineIdHistory.type) * (KLINES_COUNT_HISTORY + 1)), currDateTime);
+                const auto history = _tradingData.getKLinesOnDate(stockExchangeId,
+                                                                  kline->id,
+                                                                  currDateTime - (static_cast<qint64>(klineIdHistory.type) * (KLINES_COUNT_HISTORY)) - static_cast<qint64>(klineIdHistory.type) / 2,
+                                                                  currDateTime + static_cast<qint64>(klineIdHistory.type) / 2);
                 if (history->empty())
                 {
                     //qDebug() << "History size to less : " << history->size();
@@ -149,7 +152,10 @@ void Detector::addKLines(const TradingCatCommon::StockExchangeID& stockExchangeI
                     continue;
                 }
 
-                const auto reviewHistory = _tradingData.getKLinesOnDate(stockExchangeId, klineIdReviewHistory, currDateTime - (static_cast<quint64>(klineIdReviewHistory.type) * (KLINES_COUNT_HISTORY + 1)), currDateTime);
+                const auto reviewHistory = _tradingData.getKLinesOnDate(stockExchangeId,
+                                                                        klineIdReviewHistory,
+                                                                        currDateTime - (static_cast<qint64>(klineIdReviewHistory.type) * (KLINES_COUNT_HISTORY)) - static_cast<qint64>(klineIdReviewHistory.type) / 2,
+                                                                        currDateTime + static_cast<qint64>(klineIdReviewHistory.type) / 2);
                 if (reviewHistory->empty())
                 {
                     //qDebug() << "Review history size to less" << reviewHistory->size();

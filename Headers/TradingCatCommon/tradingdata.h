@@ -56,6 +56,13 @@ public:
     */
     const TradingCatCommon::StockExchangesIDList& stockExcangesIdList() const noexcept;
 
+    /*!
+        Возвращает список свечей поддерживаемых данной биржей
+        @param stockExchangeID - ИД биржи
+        @return список свечей  данной биржей
+    */
+    const TradingCatCommon::KLinesIDList& getKLineList(const TradingCatCommon::StockExchangeID& stockExchangeID) const;
+
 signals:
     /*!
         Сигнал испускаеться когда класс завершил работу

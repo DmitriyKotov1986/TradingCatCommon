@@ -2,6 +2,7 @@
 
 //STL
 #include <unordered_set>
+#include <optional>
 
 //Qt
 #include <QString>
@@ -10,10 +11,14 @@
 namespace TradingCatCommon
 {
 
+///////////////////////////////////////////////////////////////////////////////
+///     The StockExchangeID class - ИД биржи
+///
 struct StockExchangeID
 {
-    QString name;
+    QString name; ///< Названеи биржи
 
+    // Конструторы
     StockExchangeID() = default;
     StockExchangeID(const StockExchangeID& stockExchangeID) = default;
     StockExchangeID& operator=(const StockExchangeID& stockExchangeID) = default;
@@ -22,9 +27,21 @@ struct StockExchangeID
 
     StockExchangeID(const QString& aname);
 
+    /*!
+        Возвраащет true если название биржи пустое или невалидно
+        @return true если название биржи пустое или невалидно, false - в противном случае
+    */
     bool isEmpty() const noexcept;
 
-    QString toString() const;
+    /*!
+        Преобразвет ИД биржи в строку
+        @return строковое представление ИД Биржи
+    */
+    const QString& toString() const;
+
+private:
+    mutable std::optional<QString> _name;
+
 };
 
 size_t qHash(const TradingCatCommon::StockExchangeID& key, size_t seed);

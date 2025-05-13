@@ -32,7 +32,14 @@ bool StockExchangeID::isEmpty() const noexcept
     return name.isEmpty();
 }
 
-QString StockExchangeID::toString() const
+const QString &StockExchangeID::toString() const
 {
-    return QString("%1").arg(name);
+    if (!_name.has_value())
+    {
+        _name = QString("%1").arg(name);
+    }
+
+    return _name.value();
 }
+
+
