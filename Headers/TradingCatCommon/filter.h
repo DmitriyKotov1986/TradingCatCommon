@@ -14,6 +14,7 @@
 
 //My
 #include "TradingCatCommon/klinefilterdata.h"
+#include "TradingCatCommon/blacklistfilterdata.h"
 
 namespace TradingCatCommon
 {
@@ -47,6 +48,11 @@ public:
     */
     using KLineFilterDataList = std::list<KLineFilterData>;
 
+    /*!
+        Блеклист
+    */
+    using BlackListFilterDataList = std::list<BlackListFilterData>;
+
 public:
     Filter();
     Filter(const Filter& filter) = default;
@@ -72,11 +78,30 @@ public:
     void clear() noexcept;
 
     /*!
+        Возвращает текущие правил фильтрации
+        @return - текущие правил фильтрации
+     */
+    const KLineFilterDataList& klineFilter() const noexcept;
+
+    /*!
         Добавляет правило фильтрации
         @param filterData - правило фильтрации
     */
     template <class TKLineFilterData>
     void addFilterData(TKLineFilterData&& filterData);
+
+    /*!
+        Возвращает текущиq блек-лист
+        @return - текущие правил фильтрации
+     */
+    const BlackListFilterDataList& blackList() const noexcept;
+
+    /*!
+        Добавляет правило в блек-лист
+        @param filterData - правило фильтрации
+    */
+    template <class TBlackListFilterDataList>
+    void addBlackListData(TBlackListFilterDataList&& blackList);
 
     /*!
         Возвращает true - если последний парсинг json закончился ошибкой
@@ -88,13 +113,7 @@ public:
         Текстовое описание последней ошибки парсинга json. При вызове этого метода происходит сброс ошибки
         @return текст ошибки
      */
-    QString errorString();
-
-    /*!
-        Возвращает текущие правил фильтрации
-        @return - текущие правил фильтрации
-     */
-    const KLineFilterDataList& klineFilter() const noexcept;
+    [[nodiscard]] QString errorString();
 
     /*!
         Возвращает количество правил в фильтре
@@ -105,6 +124,8 @@ public:
 private:
     KLineFilterDataList _klineFilterData; ///< Список правил фильрации
 
+    BlackListFilterDataList _blackListFilterDataList; ///< Блек-лист
+
     QString _errorString;       ///< Текст текущей ошибки парсинга
 
 };
@@ -113,6 +134,12 @@ template <class TKLineFilterData>
 void Filter::addFilterData(TKLineFilterData&& filterData)
 {
     _klineFilterData.push_back(std::forward<KLineFilterData>(filterData));
+}
+
+template <class TBlackListFilterData>
+void Filter::addBlackListData(TBlackListFilterData&& blackList)
+{
+    _blackListFilterDataList.push_back(std::forward<BlackListFilterData>(blackList));
 }
 
 } //namespace TradingCatCommon

@@ -24,7 +24,7 @@ UserConfig::UserConfig(const QString &json)
         Filter filter(filterJson);
         if (filter.isError())
         {
-            throw ParseException(QString("Error parsing filter configuration: %1").arg(_filter.errorString()));
+            throw ParseException(QString("Error parsing filter configuration: %1").arg(filter.errorString()));
         }
 
         _filter = std::move(filter);
@@ -47,11 +47,6 @@ QString UserConfig::toJson() const
 void UserConfig::clearFilter() noexcept
 {
     _filter.clear();
-}
-
-void UserConfig::addFilterData(KLineFilterData &&filterData)
-{
-    _filter.addFilterData(std::move(filterData));
 }
 
 const Filter &UserConfig::filter() const noexcept

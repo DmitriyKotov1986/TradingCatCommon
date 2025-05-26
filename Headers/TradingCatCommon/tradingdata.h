@@ -61,13 +61,18 @@ public:
         @param stockExchangeID - ИД биржи
         @return список свечей  данной биржей
     */
-    const TradingCatCommon::KLinesIDList& getKLineList(const TradingCatCommon::StockExchangeID& stockExchangeID) const;
+    const TradingCatCommon::PKLinesIDList& getKLinesIDList(const TradingCatCommon::StockExchangeID& stockExchangeID) const;
 
 signals:
     /*!
         Сигнал испускаеться когда класс завершил работу
     */
     void finished();
+
+    /*!
+        Сигнал испускаеться когда класс начал работу и получены данные о свечах от всех бирж
+    */
+    void started();
 
 public slots:
     /*!
@@ -82,10 +87,17 @@ public slots:
 
     /*!
         Сохраняет послупвшие от бирж свечи
-        @param stockExchangeID - ИД биржи
+        @param stockExchangeId - ИД биржи. Гарантируется что ИД биржи валидно и не пустое
         @param klines - список свечей
     */
-    void addKLines(const TradingCatCommon::StockExchangeID& stockExchangeID, const TradingCatCommon::PKLinesList& klines);
+    void addKLines(const TradingCatCommon::StockExchangeID& stockExchangeId, const TradingCatCommon::PKLinesList& klines);
+
+    /*!
+        Возвращает список свечей поддерживаемых биржей
+        @param stockExchangeId - ИД биржи. Гарантируется что ИД биржи валидно и не пустое
+        @param klinesId - список свечей поддерживаемых биржей
+     */
+    void getKLinesID(const TradingCatCommon::StockExchangeID& stockExchangeId, const TradingCatCommon::PKLinesIDList& klinesId);
 
 private:
     // Удаляем неиспользуемые конструторы
@@ -94,9 +106,11 @@ private:
 
 private:
     const TradingCatCommon::StockExchangesIDList _stockExcangesIdList;  ///< Список используемых бирж
+    std::unordered_map<TradingCatCommon::StockExchangeID, TradingCatCommon::PKLinesIDList> _klinesIdList;  ///< Список свичей по биржам
     std::unique_ptr<TradingCatCommon::KLinesDataContainer> _dataKLine;  ///< Данные
 
     bool _isStarted = false;    ///< Флаг успешного запуска
+    bool _isSendStarted = false;
 
 };
 

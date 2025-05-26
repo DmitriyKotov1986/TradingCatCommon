@@ -73,7 +73,7 @@ public:
 signals:
     /*!
         Получены новые свечи от биржи. Гарантируются что свечи не повторяются и не равны ранее полученным,
-            а также что они отортированы по возрастанию времени
+            а также что они отсортированы по возрастанию времени
         @param klines - список свечей
     */
     void getKLines(const TradingCatCommon::PKLinesList& klines);
@@ -102,6 +102,8 @@ private slots:
 
     void errorOccurredKLine(const TradingCatCommon::KLineID& id, Common::EXIT_CODE errorCode, const QString& errorString);
     void sendLogMsgKLine(const TradingCatCommon::KLineID& id, Common::TDBLoger::MSG_CODE category, const QString& msg);
+
+
 
 private:
     // Удаляем неиспользуемые конструкторы

@@ -40,7 +40,7 @@ struct StockExchangeID
     const QString& toString() const;
 
 private:
-    mutable std::optional<QString> _name;
+    mutable std::optional<QString> _name; ///< строковое название биржи
 
 };
 

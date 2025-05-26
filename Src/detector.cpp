@@ -49,24 +49,47 @@ void Detector::addKLines(const TradingCatCommon::StockExchangeID& stockExchangeI
     Q_ASSERT(!stockExchangeId.isEmpty());
     Q_ASSERT(!klines->empty());
 
-    if (klines->front()->id.type != KLineType::MIN1)
+    const auto& klineId = klines->front()->id;
+
+    if (klineId.type != KLineType::MIN1)
     {
         return;
     }
 
     const auto currDateTime = QDateTime::currentDateTime().toMSecsSinceEpoch();
 
-    for (const auto& kline: *klines)
+    for (const auto& [sessionId, filter]: _filters)
     {
-        Q_ASSERT(!kline->id.isEmpty());
+        const auto& blackListDataList = filter.blackList();
+        bool isBlackList = false;
 
-        if (currDateTime - kline->closeTime > 60 * 20 * 1000) // msec
+        for (const auto& blackListData: blackListDataList)
         {
+            if (!blackListData.stockExchangeID().has_value() || stockExchangeId == blackListData.stockExchangeID().value())
+            {
+                if (!blackListData.klineID().has_value() || klineId == blackListData.klineID().value())
+                {
+                    isBlackList = true;
+                    break;
+                }
+            }
+        }
+        if (isBlackList)
+        {
+ //           qDebug() << klineId.toString() << "is black list. Skip";
+
             continue;
         }
 
-        for (const auto& [sessionId, filter]: _filters)
+        for (const auto& kline: *klines)
         {
+            Q_ASSERT(!kline->id.isEmpty());
+
+            if ((currDateTime - kline->closeTime) > 60 * 20 * 1000) // msec
+            {
+                continue;
+            }
+
             const auto& filtersDataList = filter.klineFilter();
 
             const auto it_filterData = std::find_if(filtersDataList.begin(), filtersDataList.end(),

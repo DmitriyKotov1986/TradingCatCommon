@@ -29,7 +29,7 @@ public:
         @param id - ИД биржи. Гарантируется что ИД биржи валидно и не пустое
         @param parent - указатель на родительский класс
     */
-    explicit IStockExchange(const TradingCatCommon::StockExchangeID& id, QObject* parent = nullptr);
+    explicit IStockExchange(const TradingCatCommon::StockExchangeID& stockExchangeId, QObject* parent = nullptr);
 
     /*!
         Деструктор
@@ -56,33 +56,33 @@ public slots:
 signals:
     /*!
         Испускается при получении новых свечей
-        @param id - ИД биржи. Гарантируется что ИД биржи валидно и не пустое
+        @param stockExchangeId - ИД биржи. Гарантируется что ИД биржи валидно и не пустое
         @param klines - список новых свечей
     */
-    void getKLines(const TradingCatCommon::StockExchangeID& id, const TradingCatCommon::PKLinesList& klines);
+    void getKLines(const TradingCatCommon::StockExchangeID& stockExchangeId, const TradingCatCommon::PKLinesList& klines);
 
     /*!
         Возвращает список свечей поддерживаемых биржей
-        @param id - ИД биржи. Гарантируется что ИД биржи валидно и не пустое
-        @param список свечей поддерживаемых биржей
+        @param stockExchangeId - ИД биржи. Гарантируется что ИД биржи валидно и не пустое
+        @param klinesId - список свечей поддерживаемых биржей
      */
-    void getKLinesID(const TradingCatCommon::StockExchangeID& id, const TradingCatCommon::KLinesIDList& klinesId);
+    void getKLinesID(const TradingCatCommon::StockExchangeID& stockExchangeId, const TradingCatCommon::PKLinesIDList& klinesId);
 
     /*!
         Сигнал генерируется если в процессе работы сервера произошла фатальная ошибка
-        @param id - ИД биржи. Гарантируется что ИД биржи валидно и не пустое
+        @param stockExchangeId - ИД биржи. Гарантируется что ИД биржи валидно и не пустое
         @param errorCode - код ошибки
         @param errorString - текстовое описание ошибки
     */
-    void errorOccurred(const TradingCatCommon::StockExchangeID& id, Common::EXIT_CODE errorCode, const QString& errorString);
+    void errorOccurred(const TradingCatCommon::StockExchangeID& stockExchangeId, Common::EXIT_CODE errorCode, const QString& errorString);
 
     /*!
         Сообщение логеру
-        @param id - ИД биржи. Гарантируется что ИД биржи валидно и не пустое
+        @param stockExchangeId - ИД биржи. Гарантируется что ИД биржи валидно и не пустое
         @param category - категория сообщения
         @param msg - текст сообщения
     */
-    void sendLogMsg(const TradingCatCommon::StockExchangeID& id, Common::TDBLoger::MSG_CODE category, const QString& msg);
+    void sendLogMsg(const TradingCatCommon::StockExchangeID& stockExchangeId, Common::TDBLoger::MSG_CODE category, const QString& msg);
 
     /*!
         Сингал генерируется после остановки работы класса
@@ -95,7 +95,7 @@ private:
     Q_DISABLE_COPY_MOVE(IStockExchange);
 
 private:
-    const TradingCatCommon::StockExchangeID _id;    ///< ИД Биржи
+    const TradingCatCommon::StockExchangeID _stockExchangeId;    ///< ИД Биржи
 
 };
 

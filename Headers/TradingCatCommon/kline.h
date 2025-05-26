@@ -140,6 +140,11 @@ namespace TradingCatCommon
 using KLinesIDList = std::unordered_set<KLineID>;
 
 /*!
+    Указатель на список идентификаторов свечей
+*/
+using PKLinesIDList = std::shared_ptr<KLinesIDList>;
+
+/*!
     Расчитывет хеш ИД свечей для использования в контейнерах Qt
 */
 size_t qHash(const TradingCatCommon::KLineID& key, size_t seed);
@@ -151,6 +156,14 @@ size_t qHash(const TradingCatCommon::KLineID& key, size_t seed);
     @return true - если названия и типы свечей совпадают
  */
 bool operator==(const TradingCatCommon::KLineID& key1, const TradingCatCommon::KLineID& key2);
+
+/*!
+    Оператор сравнения двух ИД свечей
+    @param key1
+    @param key2
+    @return true - если названия и типы свечей не совпадают
+ */
+bool operator!=(const TradingCatCommon::KLineID& key1, const TradingCatCommon::KLineID& key2);
 
 /*!
     Данные свечи

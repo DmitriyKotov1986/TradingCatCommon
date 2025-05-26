@@ -53,23 +53,44 @@ Filter::Filter(const QJsonObject &JSONFilter)
 {
     try
     {
-        const auto klinesFilterJson = JSONReadMapToArray(JSONFilter, "Filters", "Filters");
-        for (const auto& klineFilter: klinesFilterJson)
+        if (JSONFilter.contains("Filters"))
         {
-            const auto filterDataJson = JSONReadMap(klineFilter, "Filters/[]");
-            KLineFilterData klineFilterData(filterDataJson);
 
-            if (klineFilterData.isError())
+            const auto klinesFilterJson = JSONReadMapToArray(JSONFilter, "Filters", "Filters");
+            for (const auto& klineFilter: klinesFilterJson)
             {
-                throw ParseException(QString("Error parse filter: %1").arg(klineFilterData.errorString()));
-            }
+                const auto filterDataJson = JSONReadMap(klineFilter, "Filters/[]");
+                KLineFilterData klineFilterData(filterDataJson);
 
-            _klineFilterData.emplace_back(std::move(klineFilterData));
+                if (klineFilterData.isError())
+                {
+                    throw ParseException(QString("Error parse filter: %1").arg(klineFilterData.errorString()));
+                }
+
+                _klineFilterData.emplace_back(std::move(klineFilterData));
+            }
+        }
+        if (JSONFilter.contains("BlackList"))
+        {
+            const auto blackListFilterJson = JSONReadMapToArray(JSONFilter, "BlackList", "BlackList");
+            for (const auto& blackListFilter: blackListFilterJson)
+            {
+                const auto blackListFilterDataJson = JSONReadMap(blackListFilter, "BlackList/[]");
+                BlackListFilterData blackListData(blackListFilterDataJson);
+
+                if (blackListData.isError())
+                {
+                    throw ParseException(QString("Error parse black list: %1").arg(blackListData.errorString()));
+                }
+
+                _blackListFilterDataList.emplace_back(std::move(blackListData));
+            }
         }
     }
     catch (const ParseException& err)
     {
         _klineFilterData.clear();
+        _blackListFilterDataList.clear();
 
         _errorString = err.what();
 
@@ -111,11 +132,24 @@ QJsonObject Filter::toJson() const
     }
     json.insert("Filters", klineJson);
 
+    QJsonArray blackListJson;
+    for (const auto& blackListData: _blackListFilterDataList)
+    {
+        blackListJson.push_back(blackListData.toJson());
+    }
+    json.insert("BlackList", blackListJson);
+
     return json;
 }
 
 void Filter::clear() noexcept
 {
     _klineFilterData.clear();
+    _blackListFilterDataList.clear();
+}
+
+const Filter::BlackListFilterDataList &Filter::blackList() const noexcept
+{
+    return _blackListFilterDataList;
 }
 

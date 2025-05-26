@@ -45,10 +45,11 @@ public:
     void addFilterData(TKLineFilterData&& filterData);
 
     /*!
-        Добавляет правило фильтрации
-        @param filterData - правило фильтрации
+        Добавляет монету в black list
+        @param blackList - описание монеты
     */
-    void addFilterData(KLineFilterData&& filterData);
+    template <class TBlackListFilterData>
+    void addBlackListData(TBlackListFilterData&& blackList);
 
     bool isError() const noexcept;
     const QString& errorString() const noexcept;
@@ -64,6 +65,12 @@ template <class TKLineFilterData>
 void UserConfig::addFilterData(TKLineFilterData&& filterData)
 {
     _filter.addFilterData(std::forward<KLineFilterData>(filterData));
+}
+
+template <class TBlackListFilterData>
+void UserConfig::addBlackListData(TBlackListFilterData&& blackList)
+{
+    _filter.addBlackListData(std::forward<BlackListFilterData>(blackList));
 }
 
 using PUserConfig = std::shared_ptr<TradingCatCommon::UserConfig>;

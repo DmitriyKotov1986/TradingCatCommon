@@ -4,18 +4,18 @@
 
 using namespace TradingCatCommon;
 
-IStockExchange::IStockExchange(const TradingCatCommon::StockExchangeID &id, QObject* parent /* = nullptr */)
+IStockExchange::IStockExchange(const TradingCatCommon::StockExchangeID &stockExchangeId, QObject* parent /* = nullptr */)
     : QObject{parent}
-    , _id(id)
+    , _stockExchangeId(stockExchangeId)
 {
-    Q_ASSERT(!id.isEmpty());
+    Q_ASSERT(!stockExchangeId.isEmpty());
 
     qRegisterMetaType<TradingCatCommon::StockExchangeID>("TradingCatCommon::StockExchangeID");
 }
 
 const TradingCatCommon::StockExchangeID &IStockExchange::id() const
 {
-    return _id;
+    return _stockExchangeId;
 }
 
 void IStockExchange::start()

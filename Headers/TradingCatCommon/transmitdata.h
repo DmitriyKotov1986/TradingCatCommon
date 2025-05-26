@@ -27,7 +27,8 @@ enum class PackageType: quint8
     LOGOUT = 4,                 ///< Логаут
     CONFIG = 5,                 ///< Сохранение конфигурации пользователя
     STOCKEXCHANGES = 6,         ///< Список поддерживаемых бирж
-    DETECT = 7                  ///< Список свечей прошедших фильтр
+    KLINESIDLIST = 7,           ///< Список доступных на бирже свечей
+    DETECT = 8                  ///< Список свечей прошедших фильтр
 };
 
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, OK_ANSWER_TEXT, ("OK")); ///< Сообщение об успешной обработке данных

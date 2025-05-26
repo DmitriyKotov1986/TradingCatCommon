@@ -5,13 +5,9 @@
 //Qt
 #include <QRegularExpression>
 
-//My
-#include "Common/common.h"
-
 #include "TradingCatCommon/kline.h"
 
 using namespace TradingCatCommon;
-using namespace Common;
 
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, KLINETYPE_UNDEFINED, ("UNDEFINED"));
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, KLINETYPE_MIN1, ("1m"));
@@ -273,4 +269,9 @@ KLineTypes TradingCatCommon::stringToKLineTypes(const QString &types)
     }
 
     return result;
+}
+
+bool TradingCatCommon::operator!=(const KLineID &key1, const KLineID &key2)
+{
+    return !(key1 == key2);
 }

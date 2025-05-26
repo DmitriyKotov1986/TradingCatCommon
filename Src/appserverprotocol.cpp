@@ -632,7 +632,7 @@ DetectQuery::DetectQuery(const QUrlQuery &query)
     {
         bool ok = false;
         _sessionId = query.queryItemValue("sessionId").toLong(&ok);
-        if (! ok || _sessionId == 0)
+        if (!ok || _sessionId == 0)
         {
             throw ParseException("Value of key 'sessionId' must be non zero number");
         }
@@ -848,6 +848,177 @@ bool DetectAnswer::isError() const noexcept
 }
 
 const QString &DetectAnswer::errorString() const noexcept
+{
+    return _errorString;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+///     The KLinesIDList class - запрос списка свичей поддерживаемых биржей
+///
+KLinesIDListQuery::KLinesIDListQuery()
+    : Query(PackageType::KLINESIDLIST, "/data/klines")
+{
+}
+
+KLinesIDListQuery::KLinesIDListQuery(const QUrlQuery &query)
+    : KLinesIDListQuery()
+{
+    try
+    {
+        bool ok = false;
+        _sessionId = query.queryItemValue("sessionId").toLong(&ok);
+        if (! ok || _sessionId == 0)
+        {
+            throw ParseException("Value of key 'sessionId' must be non zero number");
+        }
+
+        const auto stockExhangeIDStr = query.queryItemValue("stockExchangeId");
+        if (stockExhangeIDStr.isEmpty())
+        {
+            throw ParseException("Value of key 'stockExchangeId' cannot be empty");
+        }
+
+        _stockExchangeId = StockExchangeID(stockExhangeIDStr);
+    }
+    catch (const ParseException& err)
+    {
+        _errorString = err.what();
+        _sessionId = 0;
+        _stockExchangeId = StockExchangeID();
+    }
+}
+
+KLinesIDListQuery::KLinesIDListQuery(qint64 sessionId, const StockExchangeID &stockExchangeId)
+    : KLinesIDListQuery()
+{
+    Q_ASSERT(sessionId != 0);
+    Q_ASSERT(!stockExchangeId.isEmpty());
+
+    _sessionId = sessionId;
+    _stockExchangeId = stockExchangeId;
+}
+
+QUrlQuery KLinesIDListQuery::query() const
+{
+    QUrlQuery query;
+
+    query.addQueryItem("sessionId", QString::number(_sessionId));
+    query.addQueryItem("stockExchangeId", _stockExchangeId.name);
+
+    return query;
+}
+
+qint64 KLinesIDListQuery::sessionId() const noexcept
+{
+    return _sessionId;
+}
+
+bool KLinesIDListQuery::isError() const noexcept
+{
+    return !_errorString.isEmpty();
+}
+
+const QString &KLinesIDListQuery::errorString() const noexcept
+{
+    return _errorString;
+}
+
+const StockExchangeID &KLinesIDListQuery::stockExchangeId() const noexcept
+{
+    return _stockExchangeId;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+///     The  KLinesIDListAnswer class - класс ответа на запрос KLinesIDListQuery
+///
+KLinesIDListAnswer::KLinesIDListAnswer(const StockExchangeID &stockExchangeId, const PKLinesIDList& klinesIdList, const QString& message)
+    : _stockExchangeId(stockExchangeId)
+    , _klinesIdList(klinesIdList)
+    , _message(message)
+{
+    Q_CHECK_PTR(_klinesIdList);
+    Q_ASSERT(!stockExchangeId.isEmpty());
+}
+
+KLinesIDListAnswer::KLinesIDListAnswer(const QJsonValue &json)
+{
+    _klinesIdList = std::make_shared<KLinesIDList>();
+    try
+    {
+        const auto objJson = JSONReadMap(json, "Root/Data");
+
+        const auto stockExchangeIdJson = JSONReadMapToMap(objJson, "StockExchangeID", "Root/Data/StockExchangeId");
+        StockExchangeIDJson stockExchangeId(stockExchangeIdJson);
+
+        if (stockExchangeId.isError() || stockExchangeId.stockExchangeId().isEmpty())
+        {
+            throw ParseException(QString("Error parsing Root/Data/StockExchangeID: %1").arg(stockExchangeId.errorString()));
+        }
+
+        _stockExchangeId = stockExchangeId.stockExchangeId();
+        if (_stockExchangeId.isEmpty())
+        {
+            throw ParseException(QString("Error parsing Root/Data/StockExchangeID: stock exchange ID cannot be empty"));
+        }
+
+        const auto klinesIdListJson = JSONReadMapToArray(objJson, "KLinesIDList", "Root/Data/KLinesIdList");
+
+        for (const auto& klineIdJson: klinesIdListJson)
+        {
+            const auto klineId = JSONReadMap(klineIdJson, "Root/Data/KLinesIdList/[]");
+            _klinesIdList->insert(KLineIDJson(klineId).klineId());
+        }
+
+        _message = JSONReadMapString(objJson, "Msg", "Root/Data/Msg").value_or("");
+
+    }
+    catch (const ParseException& err)
+    {
+        _errorString = err.what();
+
+        _stockExchangeId = StockExchangeID();
+        _klinesIdList->clear();
+
+    }
+}
+
+QJsonObject KLinesIDListAnswer::toJson() const
+{
+    QJsonArray klineIdListJson;
+    for (const auto& klineId: *_klinesIdList)
+    {
+        klineIdListJson.push_back(KLineIDJson(klineId).toJson());
+    }
+
+    QJsonObject resultJson;
+    resultJson.insert("StockExchangeID", StockExchangeIDJson(_stockExchangeId).toJson());
+    resultJson.insert("KLinesIDList", klineIdListJson);
+    resultJson.insert("Msg", _message);
+
+    return resultJson;
+}
+
+const StockExchangeID &KLinesIDListAnswer::stockExchangeId() const noexcept
+{
+    return _stockExchangeId;
+}
+
+const PKLinesIDList &KLinesIDListAnswer::klinesIdList() const noexcept
+{
+    return _klinesIdList;
+}
+
+const QString &KLinesIDListAnswer::message() const noexcept
+{
+    return _message;
+}
+
+bool KLinesIDListAnswer::isError() const noexcept
+{
+    return !_errorString.isEmpty();
+}
+
+const QString &KLinesIDListAnswer::errorString() const noexcept
 {
     return _errorString;
 }

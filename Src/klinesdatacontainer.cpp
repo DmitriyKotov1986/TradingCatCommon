@@ -39,8 +39,6 @@ KLinesDataContainer::KLinesDataContainer(const TradingCatCommon::StockExchangesI
         {
             _klinesData.emplace(hash(stockExcangeId, QChar(ch)), KLinesData());
         }
-
-        _stockExchangeData.data.emplace(stockExcangeId, KLinesIDList());
     }
 }
 
@@ -84,15 +82,6 @@ const TradingCatCommon::StockExchangesIDList& KLinesDataContainer::getStockExcan
     return _stockExchangesIdList;
 }
 
-const TradingCatCommon::KLinesIDList& KLinesDataContainer::getKLineList(const StockExchangeID &stockExchangeID) const
-{
-    Q_ASSERT(!stockExchangeID.isEmpty());
-
-    QMutexLocker<QMutex> stockExchangeDataLocker(&_stockExchangeData.mutex);
-
-    return _stockExchangeData.data.at(stockExchangeID);
-}
-
 qsizetype KLinesDataContainer::moneyCount() const noexcept
 {
     QMutexLocker<QMutex> moneyDataLocker(&_moneyCount.mutex);
@@ -125,11 +114,6 @@ void KLinesDataContainer::addKLines(const StockExchangeID& stockExchangeId, cons
     if (it_klinesData == klinesData.end())
     {
         it_klinesData = klinesData.emplace(klineId, KLineMap()).first;
-
-        {
-            QMutexLocker<QMutex> stockExchangeDataLocker(&_stockExchangeData.mutex);
-            _stockExchangeData.data.at(stockExchangeId).emplace(klineId);
-        }
 
         {
             QMutexLocker<QMutex> moneyDataLocker(&_moneyCount.mutex);

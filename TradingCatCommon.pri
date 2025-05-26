@@ -9,6 +9,7 @@ HEADERS += \
     $$PWD/Headers/TradingCatCommon/transmitdata.h \
     $$PWD/Headers/TradingCatCommon/filter.h \
     $$PWD/Headers/TradingCatCommon/klinefilterdata.h \
+    $$PWD/Headers/TradingCatCommon/blacklistfilterdata.h \
     $$PWD/Headers/TradingCatCommon/klinehttppool.h \
     $$PWD/Headers/TradingCatCommon/klinesdatacontainer.h \
     $$PWD/Headers/TradingCatCommon/stockexchange.h \
@@ -25,6 +26,7 @@ SOURCES += \
     $$PWD/Src/transmitdata.cpp \
     $$PWD/Src/filter.cpp \
     $$PWD/Src/klinefilterdata.cpp \
+    $$PWD/Src/blacklistfilterdata.cpp \
     $$PWD/Src/klinehttppool.cpp \
     $$PWD/Src/klinesdatacontainer.cpp \
     $$PWD/Src/stockexchange.cpp \

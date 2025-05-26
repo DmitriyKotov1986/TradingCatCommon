@@ -347,4 +347,59 @@ private:
 
 };
 
+///////////////////////////////////////////////////////////////////////////////
+///     The KLinesIDList class - запрос списка свичей поддерживаемых биржей
+///
+class KLinesIDListQuery
+    : public Query
+{
+public:
+    KLinesIDListQuery();
+    explicit KLinesIDListQuery(const QUrlQuery& query);
+    explicit KLinesIDListQuery(qint64 sessionId, const TradingCatCommon::StockExchangeID& stockExchangeId);
+
+    QUrlQuery query() const override;
+
+    qint64 sessionId() const noexcept;
+    const TradingCatCommon::StockExchangeID& stockExchangeId() const noexcept;
+
+    bool isError() const noexcept;
+    const QString& errorString() const noexcept;
+
+private:
+    QString _errorString;
+
+    qint64 _sessionId = 0;
+    TradingCatCommon::StockExchangeID _stockExchangeId;
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+///     The  KLinesIDListAnswer class - класс ответа на запрос KLinesIDListQuery
+///
+class  KLinesIDListAnswer
+{
+public:
+    KLinesIDListAnswer() = default;
+    explicit KLinesIDListAnswer(const TradingCatCommon::StockExchangeID& stockExchangeId, const TradingCatCommon::PKLinesIDList& klinesIdList, const QString& message);
+    explicit KLinesIDListAnswer(const QJsonValue& json);
+
+    QJsonObject toJson() const;
+
+    const TradingCatCommon::StockExchangeID& stockExchangeId() const noexcept;
+    const TradingCatCommon::PKLinesIDList& klinesIdList() const noexcept;
+    const QString& message() const noexcept;
+
+    bool isError() const noexcept;
+    const QString& errorString() const noexcept;
+
+private:
+    QString _errorString;
+
+    TradingCatCommon::StockExchangeID _stockExchangeId;
+    TradingCatCommon::PKLinesIDList _klinesIdList;
+    QString _message;
+
+};
+
 } //namespace TradingCatCommon

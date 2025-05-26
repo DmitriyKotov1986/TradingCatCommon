@@ -103,13 +103,6 @@ private:
     };
     std::unordered_map<size_t, KLinesData> _klinesData;
 
-    struct StockExchangeData
-    {
-        std::unordered_map<TradingCatCommon::StockExchangeID, TradingCatCommon::KLinesIDList> data;
-        mutable QMutex mutex;
-    };
-    StockExchangeData _stockExchangeData;
-
     struct MoneyCount
     {
         qsizetype count = 0;
