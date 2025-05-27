@@ -5,9 +5,13 @@
 //Qt
 #include <QRegularExpression>
 
+//My
+#include <Common/common.h>
+
 #include "TradingCatCommon/kline.h"
 
 using namespace TradingCatCommon;
+using namespace Common;
 
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, KLINETYPE_UNDEFINED, ("UNDEFINED"));
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, KLINETYPE_MIN1, ("1m"));
@@ -197,7 +201,7 @@ QString TradingCatCommon::getKLineTableName(const QString &stockExcangeName, con
 
 bool KLine::check() const noexcept
 {
-    const auto curDateTime = QDateTime::currentDateTime().addSecs(60).toMSecsSinceEpoch();
+    const auto curDateTime = QDateTime::currentDateTime().addDays(1).toMSecsSinceEpoch();
     return !id.isEmpty() &&
            closeTime > openTime &&
            closeTime < curDateTime &&
@@ -238,6 +242,25 @@ double TradingCatCommon::KLine::volumeKLine() const noexcept
     }
 
     return _volume.value();
+}
+
+const QString &KLine::toString() const
+{
+    if (!_data.has_value())
+    {
+        _data = QString("ID: %1. Open time: %2 Close time: %3 High: %4 Open: %5 Close: %6 Low: %7 Volume: %8 Quote asset volume: %9")
+            .arg(id.toString())
+            .arg(QDateTime::fromMSecsSinceEpoch(openTime).toString(DATETIME_FORMAT))
+            .arg(QDateTime::fromMSecsSinceEpoch(closeTime).toString(DATETIME_FORMAT))
+            .arg(high)
+            .arg(open)
+            .arg(close)
+            .arg(low)
+            .arg(volume)
+            .arg(quoteAssetVolume);
+    }
+
+    return _data.value();
 }
 
 

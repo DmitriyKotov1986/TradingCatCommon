@@ -199,9 +199,13 @@ struct KLine
     */
     double volumeKLine() const noexcept;
 
+    const QString& toString() const;
+
 private:
     mutable std::optional<double> _delta;
     mutable std::optional<double> _volume;
+
+    mutable std::optional<QString> _data;
 };
 
 /*!

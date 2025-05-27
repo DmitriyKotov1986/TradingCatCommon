@@ -321,7 +321,7 @@ KLineJson::KLineJson(const QJsonValue &json)
 
         if (!_kline->check())
         {
-            throw ParseException(QString("Incorrect value"));
+            throw ParseException(QString("Incorrect value: %1").arg(_kline->toString()));
         }
     }
     catch (const ParseException& err)
@@ -384,7 +384,7 @@ KLinesArrayJson::KLinesArrayJson(const QJsonValue &json)
             KLineJson kline(klineJson);
             if (kline.isError())
             {
-                throw ParseException(QString("Incorrect KLine: ").arg(kline.errorString()));
+                throw ParseException(QString("Incorrect KLine: %1").arg(kline.errorString()));
             }
 
             _klinesList->emplace_back(kline.kline());
