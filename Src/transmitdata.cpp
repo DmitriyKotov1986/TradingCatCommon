@@ -121,7 +121,7 @@ QJsonObject KLineIDJson::toJson() const
 {
     QJsonObject result;
 
-    result.insert("Symbol", _klineId.symbol);
+    result.insert("Symbol", _klineId.symbol.name);
     result.insert("Type", KLineTypeToString(_klineId.type));
 
     return result;

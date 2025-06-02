@@ -29,10 +29,6 @@ private:
         {
             return dateTime1 > dateTime2;
         }
-        size_t operator()(const qint64 dateTime) const noexcept
-        {
-            return dateTime;
-        }
     };
 
 public:

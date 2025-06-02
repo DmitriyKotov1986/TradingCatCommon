@@ -5,6 +5,7 @@ HEADERS += \
     $$PWD/Headers/TradingCatCommon/appserverprotocol.h \
     $$PWD/Headers/TradingCatCommon/ikline.h \
     $$PWD/Headers/TradingCatCommon/istockexchange.h \
+    $$PWD/Headers/TradingCatCommon/orderbook.h \
     $$PWD/Headers/TradingCatCommon/tradingdata.h \
     $$PWD/Headers/TradingCatCommon/transmitdata.h \
     $$PWD/Headers/TradingCatCommon/filter.h \
@@ -22,6 +23,7 @@ SOURCES += \
     $$PWD/Src/appserverprotocol.cpp \
     $$PWD/Src/ikline.cpp \
     $$PWD/Src/istockexchange.cpp \
+    $$PWD/Src/orderbook.cpp \
     $$PWD/Src/tradingdata.cpp \
     $$PWD/Src/transmitdata.cpp \
     $$PWD/Src/filter.cpp \

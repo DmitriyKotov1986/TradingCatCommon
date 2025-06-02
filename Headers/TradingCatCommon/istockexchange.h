@@ -9,6 +9,7 @@
 
 #include "TradingCatCommon/kline.h"
 #include "TradingCatCommon/stockexchange.h"
+#include "TradingCatCommon/orderbook.h"
 
 #ifndef QT_NO_SSL
 
@@ -62,11 +63,27 @@ signals:
     void getKLines(const TradingCatCommon::StockExchangeID& stockExchangeId, const TradingCatCommon::PKLinesList& klines);
 
     /*!
+        Испускаеться при получении незавершенной  свечи
+        @param stockExchangeId - ИД биржи. Гарантируется что ИД биржи валидно и не пустое
+        @param kline - Новые данные для построение свечи (текущее состояние)
+    */
+    void getDiffKLines(const TradingCatCommon::StockExchangeID& stockExchangeId, const TradingCatCommon::PKLine& kline);
+
+    /*!
         Возвращает список свечей поддерживаемых биржей
         @param stockExchangeId - ИД биржи. Гарантируется что ИД биржи валидно и не пустое
         @param klinesId - список свечей поддерживаемых биржей
      */
     void getKLinesID(const TradingCatCommon::StockExchangeID& stockExchangeId, const TradingCatCommon::PKLinesIDList& klinesId);
+
+    /*!
+        Полное обновление стакана заявок
+     * \param stockExchangeId
+     * \param orderBook
+     */
+    void getOrderBook(const TradingCatCommon::StockExchangeID& stockExchangeId, const QString& symbol, const TradingCatCommon::POrderBook& orderBook);
+
+    void getDiffOrderBook(const TradingCatCommon::StockExchangeID& stockExchangeId, const TradingCatCommon::POrderBook& diffOrderBook);
 
     /*!
         Сигнал генерируется если в процессе работы сервера произошла фатальная ошибка

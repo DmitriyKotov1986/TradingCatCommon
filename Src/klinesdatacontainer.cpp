@@ -48,7 +48,7 @@ PKLinesList KLinesDataContainer::getKLinesOnDate(const StockExchangeID &stockExc
     Q_ASSERT(!klineId.isEmpty());
     Q_ASSERT(start < end);
 
-    const auto moneyHash = hash(stockExchangeId, klineId.symbol);
+    const auto moneyHash = hash(stockExchangeId, klineId.symbol.name);
     const auto& moneyData = _klinesData.at(moneyHash);
 
     auto result = std::make_shared<KLinesList>();
@@ -104,7 +104,7 @@ void KLinesDataContainer::addKLines(const StockExchangeID& stockExchangeId, cons
         });
 
     const auto klineId = klines->front()->id;
-    const auto moneyHash = hash(stockExchangeId, klineId.symbol);
+    const auto moneyHash = hash(stockExchangeId, klineId.symbol.name);
     auto& moneyData = _klinesData.at(moneyHash);
     auto& klinesData = moneyData.klines;
     auto it_klinesData = klinesData.find(klineId);

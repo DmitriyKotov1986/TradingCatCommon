@@ -145,12 +145,27 @@ size_t TradingCatCommon::qHash(const KLineID &key, size_t seed)
 {
     Q_UNUSED(seed);
 
-    return qHash(key.symbol) + 47 * static_cast<quint64>(key.type);
+    return qHash(key.symbol, 0) + 47 * static_cast<quint64>(key.type);
 }
 
 bool TradingCatCommon::operator==(const KLineID &key1, const KLineID &key2)
 {
     return (key1.symbol == key2.symbol) && (key1.type == key2.type);
+}
+
+bool TradingCatCommon::operator!=(const KLineID &key1, const KLineID &key2)
+{
+    return !(key1 == key2);
+}
+
+bool TradingCatCommon::operator==(const Symbol& key1, const Symbol& key2)
+{
+    return key1.name == key2.name;
+}
+
+bool TradingCatCommon::operator!=(const Symbol& key1, const Symbol& key2)
+{
+    return !(key1 == key2);
 }
 
 std::size_t std::hash<KLineID>::operator()(const KLineID &key) const noexcept
@@ -165,31 +180,46 @@ bool KLineID::isEmpty() const noexcept
 
 QString KLineID::toString() const
 {
-    return QString("%1:%2").arg(symbol).arg(KLineTypeToString(type));
+    return QString("%1:%2").arg(symbol.name).arg(KLineTypeToString(type));
 }
 
 const QString &KLineID::baseName() const
 {
-    if (_baseName.has_value())
-    {
-        return _baseName.value();
-    }
-
-    static const auto reg = QRegularExpression("[^A-Z0-9]");
-
-    auto klineName = symbol;
-    klineName = klineName.first(klineName.indexOf("USDT"));
-    klineName = klineName.remove(reg);
-
-    _baseName = klineName;
-
-    return _baseName.value();
+    return symbol.baseName();
 }
 
 KLineID::KLineID(const QString &asymbol, KLineType atype)
     : symbol(asymbol)
     , type(atype)
 {
+}
+
+KLineID::KLineID(const TradingCatCommon::KLineID& id)
+    : symbol(id.symbol)
+    , type(id.type)
+{
+}
+
+KLineID &KLineID::operator=(const KLineID& id)
+{
+    symbol = id.symbol;
+    type = id.type;
+
+    return *this;
+}
+
+KLineID::KLineID(KLineID&& id)
+    : symbol(std::move(id.symbol))
+    , type(std::move(id.type))
+{
+}
+
+KLineID& KLineID::operator=(KLineID&& id)
+{
+    symbol = std::move(id.symbol);
+    type = std::move(id.type);
+
+    return *this;
 }
 
 QString TradingCatCommon::getKLineTableName(const QString &stockExcangeName, const QString &moneyName, const QString &typeName)
@@ -294,7 +324,78 @@ KLineTypes TradingCatCommon::stringToKLineTypes(const QString &types)
     return result;
 }
 
-bool TradingCatCommon::operator!=(const KLineID &key1, const KLineID &key2)
+///////////////////////////////////////////////////////////////////////////////
+///     The Symbol class - название монеты
+///
+Symbol::Symbol(const QString &aname)
+    : name(aname)
 {
-    return !(key1 == key2);
+}
+
+Symbol::Symbol(const Symbol &symbol)
+    : name(symbol.name)
+    , _baseName(symbol._baseName.has_value() ? std::make_optional(symbol._baseName.value()) : std::nullopt)
+{
+}
+
+Symbol &Symbol::operator=(const Symbol &symbol)
+{
+    name = symbol.name;
+    _baseName = symbol._baseName.has_value() ? std::make_optional(symbol._baseName.value()) : std::nullopt;
+
+    return *this;
+}
+
+Symbol::Symbol(Symbol &&symbol)
+    : name(std::move(symbol.name))
+    , _baseName(symbol._baseName.has_value() ? std::make_optional(symbol._baseName.value()) : std::nullopt)
+{
+}
+
+Symbol &Symbol::operator=(Symbol &&symbol)
+{
+    name = std::move(symbol.name);
+    _baseName = symbol._baseName.has_value() ? std::make_optional(symbol._baseName.value()) : std::nullopt;
+
+    return *this;
+}
+
+bool Symbol::isEmpty() const noexcept
+{
+    return name.isEmpty();
+}
+
+QString Symbol::toString() const
+{
+    return name;
+}
+
+const QString &Symbol::baseName() const
+{
+    if (_baseName.has_value())
+    {
+        return _baseName.value();
+    }
+
+    static const auto reg = QRegularExpression("[^A-Z0-9]");
+
+    auto klineName = name;
+    klineName = klineName.first(klineName.indexOf("USDT"));
+    klineName = klineName.remove(reg);
+
+    _baseName = klineName;
+
+    return _baseName.value();
+}
+
+std::size_t std::hash<TradingCatCommon::Symbol>::operator()(const TradingCatCommon::Symbol &key) const noexcept
+{
+    return qHash(key, 0);
+}
+
+size_t TradingCatCommon::qHash(const Symbol &key, size_t seed)
+{
+    Q_UNUSED(seed);
+
+    return qHash(key.name);
 }
