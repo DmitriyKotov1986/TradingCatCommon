@@ -36,7 +36,7 @@ public:
     };
 
 public:
-    OrderBook() = default;
+    explicit OrderBook(qint64 version);
     ~OrderBook() = default;
 
     const TAsksList& asks() const noexcept;
@@ -57,8 +57,13 @@ public:
     void addDiffBid(TOrder order);
 
 private:
+    OrderBook() = delete;
+
+private:
     TAsksList _asks;
     TBidsList _bids;
+
+    qint64 version = 0;
 
 };
 

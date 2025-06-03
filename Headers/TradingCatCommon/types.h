@@ -30,20 +30,6 @@ struct ProxyData
 using ProxyDataList = std::list<ProxyData>; ///< Список параметров прокси
 
 ///////////////////////////////////////////////////////////////////////////////
-///     The StockExchangeConfig class - конфигурация подключения к бирже
-///
-struct StockExchangeConfig
-{
-    QString type;           ///< Тип биржи. Должен совпадать с названием биржи
-    QString user;           ///< Имя пользователя или API key (зависит от биржи)
-    QString password;       ///< Пароль или Secret key (зависит от биржи)
-    TradingCatCommon::KLineTypes klineTypes = {TradingCatCommon::KLineType::MIN1, TradingCatCommon::KLineType::MIN5}; ///< Список интервалов свечей, которые необходимо получать с биржи
-    QStringList klineNames; ///< Фильтр названия инструментов, которые нужно получать с биржи
-};
-
-using StockExchangeConfigList = std::list<StockExchangeConfig>;   ///< Список конфигураций бирж
-
-///////////////////////////////////////////////////////////////////////////////
 ///     The HTTPServerConfig class - конфигурация HTTP сервера
 ///
 struct HTTPServerConfig

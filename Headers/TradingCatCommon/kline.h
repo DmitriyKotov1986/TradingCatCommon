@@ -78,11 +78,23 @@ KLineType stringToKLineType(const QString& type) noexcept;
 ///
 struct Symbol
 {
-    QString name;
+    QString name; ///< Полное название монеты полученно еот биржи
 
+    /*!
+        Конструктор по умолчанию. Сознает пустое название монеты
+    */
     Symbol() = default;
+
+    /*!
+        Основной конструктор
+        @param aname - полное название монеты
+    */
     Symbol(const QString& aname);
 
+    /*!
+        Конструкторы копирования/перемещения
+        @param id - исходный Символ
+    */
     Symbol(const TradingCatCommon::Symbol& symbol);
     Symbol& operator=(const TradingCatCommon::Symbol& symbol);
     Symbol(TradingCatCommon::Symbol&& symbol);
@@ -107,7 +119,7 @@ struct Symbol
     const QString& baseName() const;
 
 private:
-    mutable std::optional<QString> _baseName;
+    mutable std::optional<QString> _baseName;  ///< Название базовой монеты
 
 };
 
@@ -131,6 +143,10 @@ struct KLineID
     */
     explicit KLineID(const QString& asymbol, KLineType atype);
 
+    /*!
+        Конструкторы копирования/перемещения
+        @param id - исходный ИД
+    */
     KLineID(const TradingCatCommon::KLineID& id);
     KLineID& operator=(const TradingCatCommon::KLineID& id);
     KLineID(TradingCatCommon::KLineID&& id);
