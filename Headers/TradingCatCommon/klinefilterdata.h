@@ -20,11 +20,13 @@ namespace TradingCatCommon
 class KLineFilterData final
 {
 public:
-    inline static const double MaxDelta = 1000000.0f;
-    inline static const double MinDelta = 1.0f;
+    inline static const float MaxDelta = 1000000.0f;
+    inline static const float DefaultDelta = 5.0f;
+    inline static const float MinDelta = 1.0f;
 
-    inline static const double MaxVolume = 1000000.0f;
-    inline static const double MinVolume = 500.0f;
+    inline static const float MaxVolume = 1000000.0f;
+    inline static const float DefaultVolume = 2000.0f;
+    inline static const float MinVolume = 500.0f;
 
 public:
     KLineFilterData() = default;
@@ -37,13 +39,13 @@ public:
 
     const std::optional<TradingCatCommon::StockExchangeID>& stockExchangeID() const noexcept; ///< ИД Биржи
     const std::optional<TradingCatCommon::KLineID>& klineID() const noexcept;  ///< ИД Свечи или ALL_KLINESID, если фильтр относится ко всем свечам биржи
-    const std::optional<double>& delta() const noexcept;        ///< Пороговое значение дельты по цене
-    const std::optional<double>& volume() const noexcept;       ///< Пороговое значение дельты по объему
+    const std::optional<float>& delta() const noexcept;        ///< Пороговое значение дельты по цене
+    const std::optional<float>& volume() const noexcept;       ///< Пороговое значение дельты по объему
 
     void setStockExchangeID(const std::optional<TradingCatCommon::StockExchangeID>& stockExchangeId);
     void setKLlineID( const std::optional<TradingCatCommon::KLineID>& klineId);
-    void setDelta(const std::optional<double>& delta);
-    void setVolume(const std::optional<double>& volume);
+    void setDelta(const std::optional<float>& delta);
+    void setVolume(const std::optional<float>& volume);
 
     /*!
         Очищает поля фильра
@@ -92,8 +94,8 @@ private:
     //data
     std::optional<TradingCatCommon::StockExchangeID> _stockExchangeID = std::nullopt; ///< ИД Биржи
     std::optional<TradingCatCommon::KLineID> _klineID = std::nullopt;  ///< ИД Свечи или ALL_KLINESID, если фильтр относится ко всем свечам биржи
-    std::optional<double> _delta = std::nullopt;        ///< Пороговое значение дельты по цене
-    std::optional<double> _volume = std::nullopt;       ///< Пороговое значение дельты по объему
+    std::optional<float> _delta = std::nullopt;        ///< Пороговое значение дельты по цене
+    std::optional<float> _volume = std::nullopt;       ///< Пороговое значение дельты по объему
 
     //service
     QString _errorString;

@@ -81,34 +81,34 @@ void Detector::addKLines(const TradingCatCommon::StockExchangeID& stockExchangeI
             continue;
         }
 
+        const auto& filtersDataList = filter.klineFilter();
+
+        const auto it_filterData = std::find_if(filtersDataList.begin(), filtersDataList.end(),
+                                                [&stockExchangeId, &klineId](const auto& filterData)
+                                                {
+                                                    const auto& filterStockExchangeID = filterData.stockExchangeID();
+                                                    if (!filterStockExchangeID.has_value() || (filterStockExchangeID.value() == stockExchangeId))
+                                                    {
+                                                        const auto& filterKLineID = filterData.klineID();
+                                                        if (!filterKLineID.has_value() || (filterKLineID.value() == klineId))
+                                                        {
+                                                            return true;
+                                                        }
+                                                    }
+
+                                                    return false;
+                                                });
+
+        if (it_filterData == filtersDataList.end())
+        {
+            continue;
+        }
+
         for (const auto& kline: *klines)
         {
             Q_ASSERT(!kline->id.isEmpty());
 
             if ((currDateTime - kline->closeTime) > 60 * 20 * 1000) // msec
-            {
-                continue;
-            }
-
-            const auto& filtersDataList = filter.klineFilter();
-
-            const auto it_filterData = std::find_if(filtersDataList.begin(), filtersDataList.end(),
-                [&stockExchangeId, &kline](const auto& filterData)
-                {
-                    const auto& filterStockExchangeID = filterData.stockExchangeID();
-                    if (!filterStockExchangeID.has_value() || (filterStockExchangeID.value() == stockExchangeId))
-                    {
-                        const auto& filterKLineID = filterData.klineID();
-                        if (!filterKLineID.has_value() || (filterKLineID.value() == kline->id))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                });
-
-            if (it_filterData == filtersDataList.end())
             {
                 continue;
             }

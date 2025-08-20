@@ -2,9 +2,6 @@
 #include <limits>
 #include <cmath>
 
-//Qt
-#include <QRegularExpression>
-
 //My
 #include <Common/common.h>
 
@@ -25,7 +22,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, KLINETYPE_HOUR8, ("8h"));
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, KLINETYPE_DAY1, ("1d"));
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, KLINETYPE_WEEK1, ("1w"));
 
-static const double POSITIV_EPSILON = -std::numeric_limits<double>::epsilon();
+static const float POSITIV_EPSILON = -std::numeric_limits<float>::epsilon();
 
 QString TradingCatCommon::KLineTypeToString(KLineType type)
 {
@@ -158,16 +155,6 @@ bool TradingCatCommon::operator!=(const KLineID &key1, const KLineID &key2)
     return !(key1 == key2);
 }
 
-bool TradingCatCommon::operator==(const Symbol& key1, const Symbol& key2)
-{
-    return key1.name == key2.name;
-}
-
-bool TradingCatCommon::operator!=(const Symbol& key1, const Symbol& key2)
-{
-    return !(key1 == key2);
-}
-
 std::size_t std::hash<KLineID>::operator()(const KLineID &key) const noexcept
 {
     return static_cast<size_t>(TradingCatCommon::qHash(key, 0));
@@ -188,7 +175,7 @@ const QString &KLineID::baseName() const
     return symbol.baseName();
 }
 
-KLineID::KLineID(const QString &asymbol, KLineType atype)
+KLineID::KLineID(const Symbol& asymbol, KLineType atype)
     : symbol(asymbol)
     , type(atype)
 {
@@ -244,14 +231,14 @@ bool KLine::check() const noexcept
            quoteAssetVolume > POSITIV_EPSILON;
 }
 
-double TradingCatCommon::KLine::deltaKLine() const noexcept
+float TradingCatCommon::KLine::deltaKLine() const noexcept
 {
     if (_delta.has_value())
     {
         return _delta.value();
     }
 
-    if (std::fabs(low) < std::numeric_limits<double>::epsilon())
+    if (std::fabs(low) < std::numeric_limits<float>::epsilon())
     {
         _delta = 0.0f;
     }
@@ -264,7 +251,7 @@ double TradingCatCommon::KLine::deltaKLine() const noexcept
     return _delta.value();
 }
 
-double TradingCatCommon::KLine::volumeKLine() const noexcept
+float TradingCatCommon::KLine::volumeKLine() const noexcept
 {
     if (!_volume.has_value())
     {
@@ -324,78 +311,3 @@ KLineTypes TradingCatCommon::stringToKLineTypes(const QString &types)
     return result;
 }
 
-///////////////////////////////////////////////////////////////////////////////
-///     The Symbol class - название монеты
-///
-Symbol::Symbol(const QString &aname)
-    : name(aname)
-{
-}
-
-Symbol::Symbol(const Symbol &symbol)
-    : name(symbol.name)
-    , _baseName(symbol._baseName.has_value() ? std::make_optional(symbol._baseName.value()) : std::nullopt)
-{
-}
-
-Symbol &Symbol::operator=(const Symbol &symbol)
-{
-    name = symbol.name;
-    _baseName = symbol._baseName.has_value() ? std::make_optional(symbol._baseName.value()) : std::nullopt;
-
-    return *this;
-}
-
-Symbol::Symbol(Symbol &&symbol)
-    : name(std::move(symbol.name))
-    , _baseName(symbol._baseName.has_value() ? std::make_optional(symbol._baseName.value()) : std::nullopt)
-{
-}
-
-Symbol &Symbol::operator=(Symbol &&symbol)
-{
-    name = std::move(symbol.name);
-    _baseName = symbol._baseName.has_value() ? std::make_optional(symbol._baseName.value()) : std::nullopt;
-
-    return *this;
-}
-
-bool Symbol::isEmpty() const noexcept
-{
-    return name.isEmpty();
-}
-
-QString Symbol::toString() const
-{
-    return name;
-}
-
-const QString &Symbol::baseName() const
-{
-    if (_baseName.has_value())
-    {
-        return _baseName.value();
-    }
-
-    static const auto reg = QRegularExpression("[^A-Z0-9]");
-
-    auto klineName = name;
-    klineName = klineName.first(klineName.indexOf("USDT"));
-    klineName = klineName.remove(reg);
-
-    _baseName = klineName;
-
-    return _baseName.value();
-}
-
-std::size_t std::hash<TradingCatCommon::Symbol>::operator()(const TradingCatCommon::Symbol &key) const noexcept
-{
-    return qHash(key, 0);
-}
-
-size_t TradingCatCommon::qHash(const Symbol &key, size_t seed)
-{
-    Q_UNUSED(seed);
-
-    return qHash(key.name);
-}

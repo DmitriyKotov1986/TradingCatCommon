@@ -308,13 +308,13 @@ KLineJson::KLineJson(const QJsonValue &json)
         _kline = std::make_shared<KLine>();
 
         _kline->openTime = JSONReadMapNumber<qint64>(klineJson, "OT", "KLine/OT", 0).value_or(0);
-        _kline->open = JSONReadMapNumber<double>(klineJson, "O", "KLine/O", 0.0f).value_or(-1.0f);
-        _kline->high = JSONReadMapNumber<double>(klineJson, "H", "KLine/H", 0.0f).value_or(-1.0f);
-        _kline->low = JSONReadMapNumber<double>(klineJson, "L", "KLine/L", 0.0f).value_or(-1.0f);
-        _kline->close = JSONReadMapNumber<double>(klineJson, "C", "KLine/C", 0.0f).value_or(-1.0f);
-        _kline->volume = JSONReadMapNumber<double>(klineJson, "V", "KLine/V", 0.0f).value_or(-1.0f);
+        _kline->open = JSONReadMapNumber<float>(klineJson, "O", "KLine/O", 0.0f).value_or(-1.0f);
+        _kline->high = JSONReadMapNumber<float>(klineJson, "H", "KLine/H", 0.0f).value_or(-1.0f);
+        _kline->low = JSONReadMapNumber<float>(klineJson, "L", "KLine/L", 0.0f).value_or(-1.0f);
+        _kline->close = JSONReadMapNumber<float>(klineJson, "C", "KLine/C", 0.0f).value_or(-1.0f);
+        _kline->volume = JSONReadMapNumber<float>(klineJson, "V", "KLine/V", 0.0f).value_or(-1.0f);
         _kline->closeTime = JSONReadMapNumber<qint64>(klineJson, "CT", "KLine/CT", 0).value_or(0);
-        _kline->quoteAssetVolume = JSONReadMapNumber<double>(klineJson, "QAV", "KLine/QAV", 0.0f).value_or(-1.0f);
+        _kline->quoteAssetVolume = JSONReadMapNumber<float>(klineJson, "QAV", "KLine/QAV", 0.0f).value_or(-1.0f);
 
         const auto klineIdJson = JSONReadMapToMap(klineJson, "ID", "KLine/ID");
         _kline->id = KLineIDJson(klineIdJson).klineId();

@@ -43,8 +43,8 @@ QString Filter::filterTypesToString(FilterTypes filterTypes)
 Filter::Filter()
 {
     KLineFilterData klineFilterData;
-    klineFilterData.setDelta(KLineFilterData::MaxDelta);
-    klineFilterData.setVolume(KLineFilterData::MaxVolume);
+    klineFilterData.setDelta(KLineFilterData::DefaultDelta);
+    klineFilterData.setVolume(KLineFilterData::DefaultVolume);
 
     _klineFilterData.emplace_back(std::move(klineFilterData));
 }

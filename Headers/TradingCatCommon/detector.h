@@ -40,8 +40,8 @@ public:
         TradingCatCommon::Filter::FilterTypes filterActivate;   ///< типы стработавших фильтров
         TradingCatCommon::PKLinesList history;                  ///< Список основных свечей
         TradingCatCommon::PKLinesList reviewHistory;            ///< Список свечей обзора
-        double delta = 0.0f;    ///< Делта в момент стработки фильтра
-        double volume = 0.0f;   ///< Объем в момент сработки фильтра
+        float delta = 0.0f;    ///< Делта в момент стработки фильтра
+        float volume = 0.0f;   ///< Объем в момент сработки фильтра
         QString msg;            ///< Отладочное сообщенеи
     };
 
@@ -104,7 +104,7 @@ signals:
         @param category - категория сообщения
         @param msg - текст сообщения
     */
-    void sendLogMsg(Common::TDBLoger::MSG_CODE category, const QString& msg);
+    void sendLogMsg(Common::MSG_CODE category, const QString& msg);
 
     /*!
         Сигнал генерируется если в процессе работы сервера произошла фатальная ошибка

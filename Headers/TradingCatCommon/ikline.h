@@ -36,6 +36,11 @@ public:
     IKLine(const TradingCatCommon::KLineID& id, QObject* parent = nullptr);
 
     /*!
+        Деструктор
+    */
+    ~IKLine() override = default;
+
+    /*!
         Возвращает ИД свечи. Гарантируется что ИД не булет пустым
         @return ИД свечи
     */
@@ -86,7 +91,7 @@ signals:
         @param category - категория сообщения
         @param msg - текст сообщения
     */
-    void sendLogMsg(const TradingCatCommon::KLineID& id, Common::TDBLoger::MSG_CODE category, const QString& msg);
+    void sendLogMsg(const TradingCatCommon::KLineID& id, Common::MSG_CODE category, const QString& msg);
 
     /*!
         Сигнал получения новых свечей

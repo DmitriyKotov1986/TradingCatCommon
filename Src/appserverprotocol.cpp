@@ -24,10 +24,6 @@ ServerStatusQuery::ServerStatusQuery(const QUrlQuery &query)
     Q_UNUSED(query);
 }
 
-ServerStatusQuery::~ServerStatusQuery()
-{
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 ///     ServerStatus::serverTime
 ///
@@ -717,7 +713,7 @@ DetectAnswer::DetectAnswer(const QJsonValue &json)
             }
 
             {
-                const auto o_delta = JSONReadMapNumber<double>(detectJson, "Delta", "Root/Data/Detect/[]/Delta", 0.0f);
+                const auto o_delta = JSONReadMapNumber<float>(detectJson, "Delta", "Root/Data/Detect/[]/Delta", 0.0f);
                 if (!o_delta.has_value())
                 {
                     throw ParseException("Value of Root/Data/Detect/[]/Delta cannot be undefined");
@@ -727,7 +723,7 @@ DetectAnswer::DetectAnswer(const QJsonValue &json)
             }
 
             {
-                const auto o_volume = JSONReadMapNumber<double>(detectJson, "Volume", "Root/Data/Detect/[]/Volume", 0.0f);
+                const auto o_volume = JSONReadMapNumber<float>(detectJson, "Volume", "Root/Data/Detect/[]/Volume", 0.0f);
                 if (!o_volume.has_value())
                 {
                     throw ParseException("Value of Root/Data/Detect/[]/Volume cannot be undefined");

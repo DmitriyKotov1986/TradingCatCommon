@@ -24,3 +24,25 @@ TradingCatCommon::OrderBook::TBestPrice TradingCatCommon::OrderBook::bestPrice()
 
     return result;
 }
+
+TradingCatCommon::OrderBook::OrderBook(const TradingCatCommon::Symbol& symbol, qint64 version)
+    : _version(version)
+    , _symbol(symbol)
+{
+    Q_ASSERT(_version != 0);
+    Q_ASSERT(!_symbol.isEmpty());
+}
+
+qint64 TradingCatCommon::OrderBook::version() const noexcept
+{
+    Q_ASSERT(_version != 0);
+
+    return _version;
+}
+
+const TradingCatCommon::Symbol &TradingCatCommon::OrderBook::symbol() const noexcept
+{
+    Q_ASSERT(!_symbol.isEmpty());
+
+    return _symbol;
+}

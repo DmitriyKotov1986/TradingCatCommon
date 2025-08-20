@@ -1,3 +1,5 @@
+#ifndef QT_NO_SSL
+
 //STL
 #include <algorithm>
 
@@ -6,8 +8,6 @@
 #include <QRandomGenerator64>
 
 #include "TradingCatCommon/klinehttppool.h"
-
-#ifndef QT_NO_SSL
 
 using namespace TradingCatCommon;
 
@@ -45,8 +45,8 @@ void KLineHTTPPool::addKLine(std::unique_ptr<IKLine> &&kline)
                      SLOT(getKLinesKLine(const TradingCatCommon::PKLinesList&)));
     QObject::connect(kline.get(), SIGNAL(errorOccurred(const TradingCatCommon::KLineID&, Common::EXIT_CODE, const QString&)),
                      SLOT(errorOccurredKLine(const TradingCatCommon::KLineID&, Common::EXIT_CODE, const QString&)));
-    QObject::connect(kline.get(), SIGNAL(sendLogMsg(const TradingCatCommon::KLineID&, Common::TDBLoger::MSG_CODE, const QString&)),
-                     SLOT(sendLogMsgKLine(const TradingCatCommon::KLineID&, Common::TDBLoger::MSG_CODE, const QString&)));
+    QObject::connect(kline.get(), SIGNAL(sendLogMsg(const TradingCatCommon::KLineID&, Common::MSG_CODE, const QString&)),
+                     SLOT(sendLogMsgKLine(const TradingCatCommon::KLineID&, Common::MSG_CODE, const QString&)));
 
     kline->setHTTP(_http);
 
@@ -100,7 +100,7 @@ void KLineHTTPPool::errorOccurredKLine(const TradingCatCommon::KLineID& id, Comm
     emit errorOccurred(errorCode, QString("Error get KLine ID %1 from HTTP server: %2").arg(id.toString()).arg(errorString));
 }
 
-void KLineHTTPPool::sendLogMsgKLine(const TradingCatCommon::KLineID& id, Common::TDBLoger::MSG_CODE category, const QString& msg)
+void KLineHTTPPool::sendLogMsgKLine(const TradingCatCommon::KLineID& id, Common::MSG_CODE category, const QString& msg)
 {
     emit sendLogMsg(category, QString("KLine ID %1: %2").arg(id.toString()).arg(msg));
 }

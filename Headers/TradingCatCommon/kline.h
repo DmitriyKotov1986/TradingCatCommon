@@ -13,6 +13,9 @@
 #include <QHostAddress>
 #include <QJsonObject>
 
+//My
+#include <TradingCatCommon/symbol.h>
+
 namespace TradingCatCommon
 {
 
@@ -73,62 +76,14 @@ KLineType stringToKLineType(const QString& type) noexcept;
     @return  KLineType
 */
 
-///////////////////////////////////////////////////////////////////////////////
-///     The Symbol class - название монеты
-///
-struct Symbol
-{
-    QString name; ///< Полное название монеты полученно еот биржи
 
-    /*!
-        Конструктор по умолчанию. Сознает пустое название монеты
-    */
-    Symbol() = default;
-
-    /*!
-        Основной конструктор
-        @param aname - полное название монеты
-    */
-    Symbol(const QString& aname);
-
-    /*!
-        Конструкторы копирования/перемещения
-        @param id - исходный Символ
-    */
-    Symbol(const TradingCatCommon::Symbol& symbol);
-    Symbol& operator=(const TradingCatCommon::Symbol& symbol);
-    Symbol(TradingCatCommon::Symbol&& symbol);
-    Symbol& operator=(TradingCatCommon::Symbol&& symbol);
-
-    /*!
-        Возвращает true если названеи монеты пустое
-        @return true если данный иднтификатор пустой, false - иначе
-    */
-    bool isEmpty() const noexcept;
-
-    /*!
-        преобразует ИД свечи в строку
-        @return ИД свечи в строковом представлении
-    */
-    QString toString() const;
-
-    /*!
-        Возвращает название базового инструмента (BTC_USDT вернет BTC)
-        @return название базового инструмента
-     */
-    const QString& baseName() const;
-
-private:
-    mutable std::optional<QString> _baseName;  ///< Название базовой монеты
-
-};
 
 ///////////////////////////////////////////////////////////////////////////////
 ///     The KLineID class - идентификатор счечи
 ///
 struct KLineID
 {
-    Symbol symbol;                    ///< название монеты
+    TradingCatCommon::Symbol symbol;                    ///< название монеты
     KLineType type = KLineType::UNDEFINED;  ///< интервал свечи
 
     /*!
@@ -141,7 +96,7 @@ struct KLineID
         @param asymbol - название монеты. Не должно быть пустым
         @param atype - тим монеты. Не дожен быть равен KLineType::UNDEFINED
     */
-    explicit KLineID(const QString& asymbol, KLineType atype);
+    explicit KLineID(const TradingCatCommon::Symbol& asymbol, KLineType atype);
 
     /*!
         Конструкторы копирования/перемещения
@@ -184,12 +139,6 @@ struct hash<TradingCatCommon::KLineID>
     size_t operator()(const TradingCatCommon::KLineID& key) const noexcept;
 };
 
-template<>
-struct hash<TradingCatCommon::Symbol>
-{
-    size_t operator()(const TradingCatCommon::Symbol& key) const noexcept;
-};
-
 } //namespace std
 
 namespace TradingCatCommon
@@ -211,11 +160,6 @@ using PKLinesIDList = std::shared_ptr<KLinesIDList>;
 size_t qHash(const TradingCatCommon::KLineID& key, size_t seed);
 
 /*!
-    Расчитывет назчания свечей для использования в контейнерах Qt
-*/
-size_t qHash(const TradingCatCommon::Symbol& key, size_t seed);
-
-/*!
     Оператор сравнения двух ИД свечей
     @param key1
     @param key2
@@ -230,22 +174,6 @@ bool operator==(const TradingCatCommon::KLineID& key1, const TradingCatCommon::K
     @return true - если названия и типы свечей не совпадают
  */
 bool operator!=(const TradingCatCommon::KLineID& key1, const TradingCatCommon::KLineID& key2);
-
-/*!
-    Оператор сравнения двух названий монет
-    @param key1
-    @param key2
-    @return true - если названия и типы свечей совпадают
- */
-bool operator==(const TradingCatCommon::Symbol& key1, const TradingCatCommon::Symbol& key2);
-
-/*!
-    Оператор сравнения двух ИД свечей
-    @param key1
-    @param key2
-    @return true - если названия и типы свечей не совпадают
- */
-bool operator!=(const TradingCatCommon::Symbol& key1, const TradingCatCommon::Symbol& key2);
 
 /*!
     Данные свечи
@@ -273,19 +201,19 @@ struct KLine
         Возвращает приведенное изменение цены. Если low=0, то возвраает 0.0
         @return приведенное изменение цены
     */
-    double deltaKLine() const noexcept;
+    float deltaKLine() const noexcept;
 
     /*!
         Возвращает приведенное изменение объема
         @return приведенное изменение объема
     */
-    double volumeKLine() const noexcept;
+    float volumeKLine() const noexcept;
 
     const QString& toString() const;
 
 private:
-    mutable std::optional<double> _delta;
-    mutable std::optional<double> _volume;
+    mutable std::optional<float> _delta;
+    mutable std::optional<float> _volume;
 
     mutable std::optional<QString> _data;
 };
@@ -317,7 +245,6 @@ QString getKLineTableName(const QString &stockExcangeName, const QString &moneyN
 } //namespace TraidingCatBot
 
 Q_DECLARE_METATYPE(TradingCatCommon::KLine);
-Q_DECLARE_METATYPE(TradingCatCommon::Symbol);
 Q_DECLARE_METATYPE(TradingCatCommon::KLineID);
 Q_DECLARE_METATYPE(TradingCatCommon::KLinesIDList);
 Q_DECLARE_METATYPE(TradingCatCommon::KLinesList);

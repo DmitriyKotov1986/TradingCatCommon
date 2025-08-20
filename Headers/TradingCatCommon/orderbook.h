@@ -8,6 +8,7 @@
 
 //Qt
 #include <QMetaType>
+#include <TradingCatCommon/symbol.h>
 
 namespace TradingCatCommon
 {
@@ -36,7 +37,7 @@ public:
     };
 
 public:
-    explicit OrderBook(qint64 version);
+    explicit OrderBook(const TradingCatCommon::Symbol& symbol, qint64 version);
     ~OrderBook() = default;
 
     const TAsksList& asks() const noexcept;
@@ -56,6 +57,9 @@ public:
     template <class TOrder>
     void addDiffBid(TOrder order);
 
+    qint64 version() const noexcept;
+    const TradingCatCommon::Symbol& symbol() const noexcept;
+
 private:
     OrderBook() = delete;
 
@@ -63,7 +67,9 @@ private:
     TAsksList _asks;
     TBidsList _bids;
 
-    qint64 version = 0;
+    qint64 _version = 0;
+
+    const TradingCatCommon::Symbol _symbol;
 
 };
 

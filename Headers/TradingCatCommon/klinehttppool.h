@@ -1,5 +1,7 @@
 #pragma once
 
+#ifndef QT_NO_SSL
+
 //STL
 #include <unordered_map>
 #include <memory>
@@ -13,8 +15,6 @@
 #include "TradingCatCommon/kline.h"
 #include "TradingCatCommon/ikline.h"
 #include "TradingCatCommon/tradingdata.h"
-
-#ifndef QT_NO_SSL
 
 namespace TradingCatCommon
 {
@@ -90,18 +90,21 @@ signals:
         @param category - категория сообщения
         @param msg - текст сообщения
     */
-    void sendLogMsg(Common::TDBLoger::MSG_CODE category, const QString& msg);
+    void sendLogMsg(Common::MSG_CODE category, const QString& msg);
 
 private slots:
     // from IKLine
     /*!
         Сигнал получения новых свечей
-        @param klines - список свечей
+        @param klines - список свечей    else if (stockExchangeName == "BITMART")
+    {
+        return QColor(47, 93, 200); //синий
+    }
     */
     void getKLinesKLine(const TradingCatCommon::PKLinesList& klines);
 
     void errorOccurredKLine(const TradingCatCommon::KLineID& id, Common::EXIT_CODE errorCode, const QString& errorString);
-    void sendLogMsgKLine(const TradingCatCommon::KLineID& id, Common::TDBLoger::MSG_CODE category, const QString& msg);
+    void sendLogMsgKLine(const TradingCatCommon::KLineID& id, Common::MSG_CODE category, const QString& msg);
 
 
 

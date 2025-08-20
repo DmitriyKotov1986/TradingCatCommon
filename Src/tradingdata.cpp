@@ -1,12 +1,13 @@
 //Qt
 #include <QMutex>
+#include <QMutexLocker>
 
 #include "TradingCatCommon/tradingdata.h"
 
 using namespace TradingCatCommon;
 using namespace Common;
 
-static QMutex klinesIDListMutex;
+Q_GLOBAL_STATIC(QMutex, klinesIDListMutex);
 
 TradingData::TradingData(const TradingCatCommon::StockExchangesIDList& stockExcangesIdList, QObject* parent /* = nullptr */)
     : QObject{parent}
@@ -73,7 +74,7 @@ const PKLinesIDList &TradingData::getKLinesIDList(const StockExchangeID &stockEx
 {
     Q_ASSERT(!stockExchangeID.isEmpty());
 
-    QMutexLocker<QMutex> klinesIDListLocker(&klinesIDListMutex);
+    QMutexLocker<QMutex> klinesIDListLocker(klinesIDListMutex);
 
     return _klinesIdList.at(stockExchangeID);
 }
@@ -93,7 +94,7 @@ void TradingData::addKLines(const TradingCatCommon::StockExchangeID& stockExchan
 
 void TradingData::getKLinesID(const StockExchangeID& stockExchangeId, const PKLinesIDList& klinesId)
 {
-    QMutexLocker<QMutex> klinesIDListLocker(&klinesIDListMutex);
+    QMutexLocker<QMutex> klinesIDListLocker(klinesIDListMutex);
 
     auto& stokExchangeKLinesId = _klinesIdList.at(stockExchangeId);
 

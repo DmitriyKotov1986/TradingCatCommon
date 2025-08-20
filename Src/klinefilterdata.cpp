@@ -7,7 +7,7 @@
 using namespace TradingCatCommon;
 using namespace Common;
 
-static const double EPSILON_POSITIVE = 0.0000000001f;               ///< минимальное пороговое значнеие цены и объема
+static const float EPSILON_POSITIVE = std::numeric_limits<float>::epsilon();               ///< минимальное пороговое значнеие цены и объема
 
 KLineFilterData::KLineFilterData(const KLineFilterData &klineFilterData)
     : _stockExchangeID(klineFilterData._stockExchangeID.has_value() ? std::make_optional(klineFilterData._stockExchangeID.value()) : std::nullopt)
@@ -77,11 +77,11 @@ KLineFilterData::KLineFilterData(const QJsonObject &json)
         }
         if (json.contains("Delta"))
         {
-            _delta = JSONReadMapNumber<double>(json, "Delta", QString("Delta"), 0.0f);
+            _delta = JSONReadMapNumber<float>(json, "Delta", QString("Delta"), 0.0f);
         }
         if (json.contains("Volume"))
         {
-            _volume = JSONReadMapNumber<double>(json, "Volume", QString("Volume"), 0.0f);
+            _volume = JSONReadMapNumber<float>(json, "Volume", QString("Volume"), 0.0f);
         }
     }
     catch (const ParseException& err)
@@ -102,24 +102,24 @@ const std::optional<KLineID> &KLineFilterData::klineID() const noexcept
     return _klineID;
 }
 
-const std::optional<double> &KLineFilterData::delta() const noexcept
+const std::optional<float> &KLineFilterData::delta() const noexcept
 {
     return _delta;
 }
 
-const std::optional<double> &KLineFilterData::volume() const noexcept
+const std::optional<float> &KLineFilterData::volume() const noexcept
 {
     return _volume;
 }
 
-void KLineFilterData::setDelta(const std::optional<double> &delta)
+void KLineFilterData::setDelta(const std::optional<float> &delta)
 {
     Q_ASSERT(delta.has_value() && delta >= (MinDelta - EPSILON_POSITIVE) && delta <= (MaxDelta + EPSILON_POSITIVE));
 
     _delta = delta;
 }
 
-void KLineFilterData::setVolume(const std::optional<double> &volume)
+void KLineFilterData::setVolume(const std::optional<float> &volume)
 {
     Q_ASSERT(volume.has_value() && volume >= (MinVolume - EPSILON_POSITIVE) && volume <= (MaxVolume + EPSILON_POSITIVE));
 

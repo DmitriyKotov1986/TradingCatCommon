@@ -44,7 +44,7 @@ private slots:
     void timeout();
 
 signals:
-    void sendLogMsg(Common::TDBLoger::MSG_CODE category, const QString& msg);
+    void sendLogMsg(Common::MSG_CODE category, const QString& msg);
     void finishedSocket(quint64 id);
 
 private:

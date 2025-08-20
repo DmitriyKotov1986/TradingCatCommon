@@ -24,7 +24,7 @@ public:
     /*!
         Деструктор
     */
-    ~ServerStatusQuery();
+    ~ServerStatusQuery() override = default;
 
     //QUrlQuery query() const override;  //Not used.
 
@@ -33,7 +33,7 @@ public:
 ///////////////////////////////////////////////////////////////////////////////
 ///     The ServerStatus class - данные о состоянии сервера
 ///
-class ServerStatusAnswer
+class ServerStatusAnswer final
 {
 public:
     /*!
@@ -99,6 +99,8 @@ public:
     explicit LoginQuery(const QUrlQuery& query);
     LoginQuery(const QString& user, const QString& password);
 
+    ~LoginQuery() override = default;
+
     QUrlQuery query() const override;
 
     const QString& user() const noexcept;
@@ -118,7 +120,7 @@ private:
 ///////////////////////////////////////////////////////////////////////////////
 ///     The LoginAnswer class - класс ответа на запрос login
 ///
-class LoginAnswer
+class LoginAnswer final
 {
 public:
     LoginAnswer() = default;
@@ -154,6 +156,8 @@ public:
     explicit LogoutQuery(const QUrlQuery& query);
     LogoutQuery(qint64 sessionId);
 
+    ~LogoutQuery() override = default;
+
     QUrlQuery query() const override;
 
     qint64 sessionId() const noexcept;
@@ -171,7 +175,7 @@ private:
 ///////////////////////////////////////////////////////////////////////////////
 ///     The LogoutAnswer class - класс ответа на запрос login
 ///
-class LogoutAnswer
+class LogoutAnswer final
 {
 public:
     LogoutAnswer() = default;
@@ -203,6 +207,8 @@ public:
     explicit ConfigQuery(const QUrlQuery& query);
     ConfigQuery(qint64 sessionId, const TradingCatCommon::UserConfig& config);
 
+    ~ConfigQuery() override = default;
+
     QUrlQuery query() const override;
 
     qint64 sessionId() const noexcept;
@@ -222,7 +228,7 @@ private:
 ///////////////////////////////////////////////////////////////////////////////
 ///     The ConfigAnswer class - класс ответа на запрос ConfigQuery
 ///
-class ConfigAnswer
+class ConfigAnswer final
 {
 public:
     ConfigAnswer() = default;
@@ -254,6 +260,8 @@ public:
     explicit StockExchangesQuery(const QUrlQuery& query);
     explicit StockExchangesQuery(qint64 sessionId);
 
+    ~StockExchangesQuery() override = default;
+
     QUrlQuery query() const override;
 
     qint64 sessionId() const noexcept;
@@ -271,7 +279,7 @@ private:
 ///////////////////////////////////////////////////////////////////////////////
 ///     The  StockExchangesAnswer class - класс ответа на запрос  StockExchangesQuery
 ///
-class  StockExchangesAnswer
+class  StockExchangesAnswer final
 {
 public:
     StockExchangesAnswer() = default;
@@ -306,6 +314,8 @@ public:
     explicit DetectQuery(const QUrlQuery& query);
     explicit DetectQuery(qint64 sessionId);
 
+    ~DetectQuery() override = default;
+
     QUrlQuery query() const override;
 
     qint64 sessionId() const noexcept;
@@ -323,7 +333,7 @@ private:
 ///////////////////////////////////////////////////////////////////////////////
 ///     The  StockExchangesAnswer class - класс ответа на запрос  StockExchangesQuery
 ///
-class  DetectAnswer
+class  DetectAnswer final
 {
 public:
     DetectAnswer() = default;
@@ -358,6 +368,8 @@ public:
     explicit KLinesIDListQuery(const QUrlQuery& query);
     explicit KLinesIDListQuery(qint64 sessionId, const TradingCatCommon::StockExchangeID& stockExchangeId);
 
+    ~KLinesIDListQuery() override = default;
+
     QUrlQuery query() const override;
 
     qint64 sessionId() const noexcept;
@@ -377,7 +389,7 @@ private:
 ///////////////////////////////////////////////////////////////////////////////
 ///     The  KLinesIDListAnswer class - класс ответа на запрос KLinesIDListQuery
 ///
-class  KLinesIDListAnswer
+class  KLinesIDListAnswer final
 {
 public:
     KLinesIDListAnswer() = default;
