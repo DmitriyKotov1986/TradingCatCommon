@@ -1,7 +1,5 @@
 #pragma once
 
-#ifndef QT_NO_SSL
-
 //STL
 #include <unordered_map>
 #include <memory>
@@ -15,6 +13,8 @@
 #include "TradingCatCommon/kline.h"
 #include "TradingCatCommon/ikline.h"
 #include "TradingCatCommon/tradingdata.h"
+
+#if !QT_NO_SSL
 
 namespace TradingCatCommon
 {

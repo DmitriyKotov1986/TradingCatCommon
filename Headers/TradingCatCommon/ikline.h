@@ -8,7 +8,7 @@
 
 #include "TradingCatCommon/kline.h"
 
-#ifndef QT_NO_SSL
+#if !QT_NO_SSL
 
 namespace TradingCatCommon
 {

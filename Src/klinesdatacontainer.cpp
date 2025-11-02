@@ -42,7 +42,7 @@ KLinesDataContainer::KLinesDataContainer(const TradingCatCommon::StockExchangesI
     }
 }
 
-PKLinesList KLinesDataContainer::getKLinesOnDate(const StockExchangeID &stockExchangeId, const KLineID &klineId, const qint64 start, const qint64 end) const
+PKLinesList KLinesDataContainer::getKLinesOnDate(const StockExchangeID &stockExchangeId, const KLineID &klineId, qint64 start, qint64 end) const
 {
     Q_ASSERT(!stockExchangeId.isEmpty());
     Q_ASSERT(!klineId.isEmpty());

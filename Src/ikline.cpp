@@ -1,6 +1,6 @@
 #include "TradingCatCommon/ikline.h"
 
-#ifndef QT_NO_SSL
+#if !QT_NO_SSL
 
 using namespace TradingCatCommon;
 

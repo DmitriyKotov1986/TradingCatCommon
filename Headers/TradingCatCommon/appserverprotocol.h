@@ -16,9 +16,14 @@ class ServerStatusQuery
 {
 public:
     /*!
-        Конструтор
+        Конструтор. Создает пустой запрос
     */
     ServerStatusQuery();
+
+    /*!
+        Конструктор. Создает запрос на основе запрощенного у сервера URL
+        @param query - URL запрос на сервер
+    */
     explicit ServerStatusQuery(const QUrlQuery& query);
 
     /*!
@@ -68,23 +73,52 @@ public:
         @return время на сервере
     */
     const QDateTime& serverTime() const noexcept;
+
+    /*!
+        Возвращает время аптайма сервера в секундах
+        @return время аптайма сервера
+    */
     qint64 upTime() const noexcept;
+
+    /*!
+        Возвращает название сервера
+        @return название сервера
+    */
     const QString& serverName() const noexcept;
+
+    /*!
+        Возвращает версию сервера
+        @return версия сервера
+    */
     const QString& serverVersion() const noexcept;
+
+    /*!
+        Возвращает список пользователей онлайн в формате ИД_ПОЛЬЗОВАТЕЛЯ(ИД_СЕССИИ)
+        @return список пользователей онлайн
+    */
     const QStringList& usersOnline() const noexcept;
 
+    /*!
+        Возвращает true если ответ распарсился с ошибкой. Текстовое описание ошибки можно получить методом errorString()
+        @return true - есть ошибка, false - все ок
+    */
     bool isError() const noexcept;
+
+    /*!
+        Возвращает текстовое описание последней ошибки. Если все ок - возвращает пустую строку
+        @return текстовое описание последней ошибки
+    */
     const QString& errorString() const noexcept;
 
 private:
     QString _errorString;  ///< Описание ошибки парсинга
 
     //data
-    QDateTime _serverTime = QDateTime::currentDateTime();
-    qint64 _upTime = 0;
-    QString _serverName;
-    QString _serverVersion;
-    QStringList _usersOnline;
+    QDateTime _serverTime = QDateTime::currentDateTime(); ///< локальне время сервера
+    qint64 _upTime = 0;         ///< время аптайма сервера
+    QString _serverName;        ///< название сервера
+    QString _serverVersion;     ///< версия сервера
+    QStringList _usersOnline;   ///< список пользователей онлайн
 
 };
 
@@ -106,11 +140,20 @@ public:
     const QString& user() const noexcept;
     const QString& password() const noexcept;
 
+    /*!
+        Возвращает true если запрос распарсился с ошибкой. Текстовое описание ошибки можно получить методом errorString()
+        @return true - есть ошибка, false - все ок
+    */
     bool isError() const noexcept;
+
+    /*!
+        Возвращает текстовое описание последней ошибки. Если все ок - возвращает пустую строку
+        @return текстовое описание последней ошибки
+    */
     const QString& errorString() const noexcept;
 
 private:
-    QString _errorString;
+    QString _errorString;   ///< Описание ошибки парсинга
 
     QString _user;
     QString _password;
@@ -129,17 +172,30 @@ public:
 
     QJsonObject toJson() const;
 
+    /*!
+        Возвращает ИД сессии пользователя
+        @return ИД сессии пользователя
+     */
     qint64 sessionId() const noexcept;
     const QString& message() const noexcept;
     const TradingCatCommon::UserConfig& config() const noexcept;
 
+    /*!
+        Возвращает true если ответ распарсился с ошибкой. Текстовое описание ошибки можно получить методом errorString()
+        @return true - есть ошибка, false - все ок
+    */
     bool isError() const noexcept;
+
+    /*!
+        Возвращает текстовое описание последней ошибки. Если все ок - возвращает пустую строку
+        @return текстовое описание последней ошибки
+    */
     const QString& errorString() const noexcept;
 
 private:
-    QString _errorString;
+    QString _errorString;   ///< Описание ошибки парсинга
 
-    qint64 _sessionId = 0;
+    qint64 _sessionId = 0;  ///< ИД сессии пользователя
     TradingCatCommon::UserConfig _config;
     QString _message;
 
@@ -160,15 +216,28 @@ public:
 
     QUrlQuery query() const override;
 
+    /*!
+        Возвращает ИД сессии пользователя
+        @return ИД сессии пользователя
+     */
     qint64 sessionId() const noexcept;
 
+    /*!
+        Возвращает true если запрос распарсился с ошибкой. Текстовое описание ошибки можно получить методом errorString()
+        @return true - есть ошибка, false - все ок
+    */
     bool isError() const noexcept;
+
+    /*!
+        Возвращает текстовое описание последней ошибки. Если все ок - возвращает пустую строку
+        @return текстовое описание последней ошибки
+    */
     const QString& errorString() const noexcept;
 
 private:
-    QString _errorString;
+    QString _errorString;   ///< Описание ошибки парсинга
 
-    qint64 _sessionId = 0;
+    qint64 _sessionId = 0;  ///< ИД сессии пользователя
 
 };
 
@@ -186,11 +255,20 @@ public:
 
     const QString& message() const noexcept;
 
+    /*!
+        Возвращает true если ответ распарсился с ошибкой. Текстовое описание ошибки можно получить методом errorString()
+        @return true - есть ошибка, false - все ок
+    */
     bool isError() const noexcept;
+
+    /*!
+        Возвращает текстовое описание последней ошибки. Если все ок - возвращает пустую строку
+        @return текстовое описание последней ошибки
+    */
     const QString& errorString() const noexcept;
 
 private:
-    QString _errorString;
+    QString _errorString; ///< Описание ошибки парсинга
 
     QString _message;
 
@@ -211,16 +289,29 @@ public:
 
     QUrlQuery query() const override;
 
+    /*!
+        Возвращает ИД сессии пользователя
+        @return ИД сессии пользователя
+    */
     qint64 sessionId() const noexcept;
     const TradingCatCommon::UserConfig& config() const noexcept;
 
+    /*!
+        Возвращает true если запрос распарсился с ошибкой. Текстовое описание ошибки можно получить методом errorString()
+        @return true - есть ошибка, false - все ок
+    */
     bool isError() const noexcept;
+
+    /*!
+        Возвращает текстовое описание последней ошибки. Если все ок - возвращает пустую строку
+        @return текстовое описание последней ошибки
+    */
     const QString& errorString() const noexcept;
 
 private:
-    QString _errorString;
+    QString _errorString;   ///< Описание ошибки парсинга
 
-    qint64 _sessionId = 0;
+    qint64 _sessionId = 0;  ///< ИД сессии пользователя
     TradingCatCommon::UserConfig _config;
 
 };
@@ -239,11 +330,20 @@ public:
 
     const QString& message() const noexcept;
 
+    /*!
+        Возвращает true если ответ распарсился с ошибкой. Текстовое описание ошибки можно получить методом errorString()
+        @return true - есть ошибка, false - все ок
+    */
     bool isError() const noexcept;
+
+    /*!
+        Возвращает текстовое описание последней ошибки. Если все ок - возвращает пустую строку
+        @return текстовое описание последней ошибки
+    */
     const QString& errorString() const noexcept;
 
 private:
-    QString _errorString;
+    QString _errorString; ///< Описание ошибки парсинга
 
     QString _message;
 
@@ -264,15 +364,28 @@ public:
 
     QUrlQuery query() const override;
 
+    /*!
+        Возвращает ИД сессии пользователя
+        @return ИД сессии пользователя
+    */
     qint64 sessionId() const noexcept;
 
+    /*!
+        Возвращает true если запрос распарсился с ошибкой. Текстовое описание ошибки можно получить методом errorString()
+        @return true - есть ошибка, false - все ок
+    */
     bool isError() const noexcept;
+
+    /*!
+        Возвращает текстовое описание последней ошибки. Если все ок - возвращает пустую строку
+        @return текстовое описание последней ошибки
+    */
     const QString& errorString() const noexcept;
 
 private:
-    QString _errorString;
+    QString _errorString;   ///< Описание ошибки парсинга
 
-    qint64 _sessionId = 0;
+    qint64 _sessionId = 0;  ///< ИД сессии пользователя
 
 };
 
@@ -291,11 +404,20 @@ public:
     const TradingCatCommon::StockExchangesIDList& stockExchangeIdList() const noexcept;
     const QString& message() const noexcept;
 
+    /*!
+        Возвращает true если ответ распарсился с ошибкой. Текстовое описание ошибки можно получить методом errorString()
+        @return true - есть ошибка, false - все ок
+    */
     bool isError() const noexcept;
+
+    /*!
+        Возвращает текстовое описание последней ошибки. Если все ок - возвращает пустую строку
+        @return текстовое описание последней ошибки
+    */
     const QString& errorString() const noexcept;
 
 private:
-    QString _errorString;
+    QString _errorString; ///< Описание ошибки парсинга
 
     TradingCatCommon::StockExchangesIDList _stockExchangeIdList;
 
@@ -318,15 +440,28 @@ public:
 
     QUrlQuery query() const override;
 
+    /*!
+        Возвращает ИД сессии пользователя
+        @return ИД сессии пользователя
+    */
     qint64 sessionId() const noexcept;
 
+    /*!
+        Возвращает true если запрос распарсился с ошибкой. Текстовое описание ошибки можно получить методом errorString()
+        @return true - есть ошибка, false - все ок
+    */
     bool isError() const noexcept;
+
+    /*!
+        Возвращает текстовое описание последней ошибки. Если все ок - возвращает пустую строку
+        @return текстовое описание последней ошибки
+    */
     const QString& errorString() const noexcept;
 
 private:
-    QString _errorString;
+    QString _errorString;   ///< Описание ошибки парсинга
 
-    qint64 _sessionId = 0;
+    qint64 _sessionId = 0;  ///< ИД сессии пользователя
 
 };
 
@@ -345,11 +480,20 @@ public:
     const TradingCatCommon::Detector::KLinesDetectedList& klinesDetectedList() const noexcept;
     const QString& message() const noexcept;
 
+    /*!
+        Возвращает true если ответ распарсился с ошибкой. Текстовое описание ошибки можно получить методом errorString()
+        @return true - есть ошибка, false - все ок
+    */
     bool isError() const noexcept;
+
+    /*!
+        Возвращает текстовое описание последней ошибки. Если все ок - возвращает пустую строку
+        @return текстовое описание последней ошибки
+    */
     const QString& errorString() const noexcept;
 
 private:
-    QString _errorString;
+    QString _errorString;   ///< Описание ошибки парсинга
 
     TradingCatCommon::Detector::KLinesDetectedList _klinesDetectedList;
 
@@ -372,16 +516,29 @@ public:
 
     QUrlQuery query() const override;
 
+    /*!
+        Возвращает ИД сессии пользователя
+        @return ИД сессии пользователя
+    */
     qint64 sessionId() const noexcept;
     const TradingCatCommon::StockExchangeID& stockExchangeId() const noexcept;
 
+    /*!
+        Возвращает true если запрос распарсился с ошибкой. Текстовое описание ошибки можно получить методом errorString()
+        @return true - есть ошибка, false - все ок
+    */
     bool isError() const noexcept;
+
+    /*!
+        Возвращает текстовое описание последней ошибки. Если все ок - возвращает пустую строку
+        @return текстовое описание последней ошибки
+    */
     const QString& errorString() const noexcept;
 
 private:
-    QString _errorString;
+    QString _errorString;   ///< Описание ошибки парсинга
 
-    qint64 _sessionId = 0;
+    qint64 _sessionId = 0;  ///< ИД сессии пользователя
     TradingCatCommon::StockExchangeID _stockExchangeId;
 
 };
@@ -402,15 +559,79 @@ public:
     const TradingCatCommon::PKLinesIDList& klinesIdList() const noexcept;
     const QString& message() const noexcept;
 
+    /*!
+        Возвращает true если ответ распарсился с ошибкой. Текстовое описание ошибки можно получить методом errorString()
+        @return true - есть ошибка, false - все ок
+    */
     bool isError() const noexcept;
+
+    /*!
+        Возвращает текстовое описание последней ошибки. Если все ок - возвращает пустую строку
+        @return текстовое описание последней ошибки
+    */
     const QString& errorString() const noexcept;
 
 private:
-    QString _errorString;
+    QString _errorString;   ///< Описание ошибки парсинга
 
     TradingCatCommon::StockExchangeID _stockExchangeId;
     TradingCatCommon::PKLinesIDList _klinesIdList;
     QString _message;
+
+};
+
+///////////////////////////////////////////////////////////////////////////////////
+///     The  KLinesDataQuery class - запрос списка свечей за определенный период
+///
+class KLinesDataQuery
+    : public Query
+{
+public:
+    KLinesDataQuery();
+    explicit KLinesDataQuery(const QUrlQuery& query);
+    KLinesDataQuery(qint64 sessionId,
+                    TradingCatCommon::StockExchangeID stockExchangeId,
+                    TradingCatCommon::KLineID klineId,
+                    qint64 start,
+                    qint64 end);
+
+    ~KLinesDataQuery() override = default;
+
+    QUrlQuery query() const override;
+
+    /*!
+        Возвращает ИД сессии пользователя
+        @return ИД сессии пользователя
+    */
+    qint64 sessionId() const noexcept;
+    const TradingCatCommon::StockExchangeID& stockExchangeId() const noexcept;
+    const TradingCatCommon::KLineID& klineId() const noexcept;
+    qint64 start() const noexcept;
+    qint64 end() const noexcept;
+
+    /*!
+        Возвращает true если запрос распарсился с ошибкой. Текстовое описание ошибки можно получить методом errorString()
+        @return true - есть ошибка, false - все ок
+    */
+    bool isError() const noexcept;
+
+    /*!
+        Возвращает текстовое описание последней ошибки. Если все ок - возвращает пустую строку
+        @return текстовое описание последней ошибки
+    */
+    const QString& errorString() const noexcept;
+
+private:
+    Q_DISABLE_COPY_MOVE(KLinesDataQuery);
+
+private:
+    QString _errorString;   ///< Описание ошибки парсинга
+
+    qint64 _sessionId = 0;  ///< ИД сессии пользователя
+    TradingCatCommon::StockExchangeID _stockExchangeId;
+    TradingCatCommon::KLineID _klineId;
+    qint64 _start = 0;
+    qint64 _end = 0;
 
 };
 

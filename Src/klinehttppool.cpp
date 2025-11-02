@@ -1,5 +1,3 @@
-#ifndef QT_NO_SSL
-
 //STL
 #include <algorithm>
 
@@ -8,6 +6,8 @@
 #include <QRandomGenerator64>
 
 #include "TradingCatCommon/klinehttppool.h"
+
+#if !QT_NO_SSL
 
 using namespace TradingCatCommon;
 

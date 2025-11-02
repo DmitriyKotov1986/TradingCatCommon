@@ -8,6 +8,7 @@ using namespace TradingCatCommon;
 using namespace Common;
 
 Q_GLOBAL_STATIC(QMutex, klinesIDListMutex);
+Q_GLOBAL_STATIC(QMutex, moneyListingMutex);
 
 TradingData::TradingData(const TradingCatCommon::StockExchangesIDList& stockExcangesIdList, QObject* parent /* = nullptr */)
     : QObject{parent}
@@ -54,7 +55,7 @@ void TradingData::stop()
     emit finished();
 }
 
-TradingCatCommon::PKLinesList TradingData::getKLinesOnDate(const StockExchangeID &stockExchangeID, const KLineID &klineID, const qint64 start, const qint64 end) const
+TradingCatCommon::PKLinesList TradingData::getKLinesOnDate(const StockExchangeID &stockExchangeID, const KLineID &klineID, qint64 start, qint64 end) const
 {
     Q_ASSERT(!stockExchangeID.isEmpty());
     Q_ASSERT(!klineID.isEmpty());
@@ -70,13 +71,36 @@ qsizetype TradingData::moneyCount() const noexcept
     return _dataKLine->moneyCount();
 }
 
+static const StockExchangesIDList defaultStockExchangesIDList;
+
+const StockExchangesIDList &TradingData::moneyListing(const Symbol &symbol) const noexcept
+{
+    QMutexLocker<QMutex> moneyListingLocker(moneyListingMutex);
+
+    auto it_moneyListing = _moneyListing.find(symbol);
+    if (it_moneyListing == _moneyListing.end())
+    {
+        return defaultStockExchangesIDList;
+    }
+
+    return it_moneyListing->second;
+}
+
+static const PKLinesIDList defaultPKLinesIDList(new KLinesIDList());
+
 const PKLinesIDList &TradingData::getKLinesIDList(const StockExchangeID &stockExchangeID) const
 {
     Q_ASSERT(!stockExchangeID.isEmpty());
 
     QMutexLocker<QMutex> klinesIDListLocker(klinesIDListMutex);
 
-    return _klinesIdList.at(stockExchangeID);
+    const auto it_klinesIdList = _klinesIdList.find(stockExchangeID);
+    if (it_klinesIdList == _klinesIdList.end())
+    {
+        return defaultPKLinesIDList;
+    }
+
+    return it_klinesIdList->second;
 }
 
 const StockExchangesIDList &TradingData::stockExcangesIdList() const noexcept
@@ -90,6 +114,21 @@ void TradingData::addKLines(const TradingCatCommon::StockExchangeID& stockExchan
     Q_ASSERT(!klines->empty());
 
     _dataKLine->addKLines(stockExchangeID, klines);
+
+    QMutexLocker<QMutex> moneyListingLocker(moneyListingMutex);
+
+    const auto& symbol = klines->front()->id.symbol;
+    auto it_moneyListing = _moneyListing.find(symbol);
+    if (it_moneyListing == _moneyListing.end())
+    {
+        it_moneyListing = _moneyListing.emplace(symbol, StockExchangesIDList()).first;
+    }
+
+    auto& stockExchangesIDList = it_moneyListing->second;
+    if (!stockExchangesIDList.contains(stockExchangeID))
+    {
+        stockExchangesIDList.emplace(stockExchangeID);
+    }
 }
 
 void TradingData::getKLinesID(const StockExchangeID& stockExchangeId, const PKLinesIDList& klinesId)
