@@ -58,7 +58,7 @@ const QString &Symbol::baseName() const
         return _baseName.value();
     }
 
-    static const auto reg = QRegularExpression("[^A-Z0-9]");
+    static const auto reg = QRegularExpression("[^A-Z0-9\u4e00-\u9fff]");
 
     auto klineName = name.toUpper();
     klineName = klineName.first(klineName.indexOf("USDT"));
